@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -23,14 +22,14 @@ import type { DatabaseConfig, DatabaseType } from '../types/api.types';
 export function DatabaseConfigForm() {
   const [config, setConfig] = useState<DatabaseConfig>({
     type: 'sqlserver',
-    host: 'localhost', // Valores predeterminados de desarrollo
-    port: 1433,
-    database: '', // Dejamos la base de datos vacía para que el usuario la seleccione
-    username: 'sa', // Credencial típica de prueba para SQL Server
-    password: 'Mobilsoft2024!', // Contraseña de prueba
+    host: '205.209.122.84',
+    port: 1437,
+    database: '',
+    username: 'sa',
+    password: 'X3c1970213@mam@',
     trustServerCertificate: true,
     encrypt: false,
-    instanceName: 'SQLEXPRESS' // Instancia predeterminada, pero opcional
+    instanceName: ''
   });
 
   const [databases, setDatabases] = useState<{ value: string; label: string; }[]>([]);
@@ -49,8 +48,6 @@ export function DatabaseConfigForm() {
       const response = await apiService.testDatabaseConnection(config);
       if (response.success) {
         setIsConnectionTested(true);
-        // Asumiendo que el servidor devuelve las bases de datos disponibles
-        // Aquí deberías hacer otra llamada para obtener las bases de datos
         const mockDatabases = [
           { value: 'db1', label: 'Base de datos 1' },
           { value: 'db2', label: 'Base de datos 2' },
@@ -87,7 +84,6 @@ export function DatabaseConfigForm() {
       });
       return;
     }
-    // Aquí iría la lógica para guardar la configuración final
     toast({
       title: "Éxito",
       description: "Configuración guardada correctamente",
