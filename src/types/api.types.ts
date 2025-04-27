@@ -10,12 +10,12 @@ export interface DatabaseConfig {
   password: string;
   trustServerCertificate?: boolean; // Específico para SQL Server
   encrypt?: boolean; // Específico para SQL Server
-  instanceName?: string; // Ahora es completamente opcional
+  // Removemos instanceName completamente
 }
 
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;
-  message?: string; // Campo para mensajes de éxito
-  error?: string; // Campo para mensajes de error
+  message?: string;
+  error?: string;
 }

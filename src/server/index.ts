@@ -1,4 +1,3 @@
-
 import express from 'express';
 import cors from 'cors';
 import sql from 'mssql';
@@ -25,19 +24,11 @@ app.use((req, res, next) => {
 app.post('/api/database/test', async (req, res) => {
   const config: DatabaseConfig = req.body;
   
-  console.log('Recibida solicitud de prueba de conexión con configuración:', JSON.stringify(config, null, 2));
-  
   try {
-    // Crear opciones base
     const options: any = {
       encrypt: config.encrypt ?? false,
       trustServerCertificate: config.trustServerCertificate ?? false
     };
-
-    // Solo agregar instanceName si existe y no está vacío
-    if (config.instanceName && config.instanceName.trim() !== '') {
-      options.instanceName = config.instanceName;
-    }
 
     const sqlConfig = {
       user: config.username,
@@ -50,11 +41,9 @@ app.post('/api/database/test', async (req, res) => {
 
     console.log('Intentando conectar con configuración SQL:', JSON.stringify(sqlConfig, null, 2));
 
-    // Intentar conectar
     const pool = await sql.connect(sqlConfig);
     console.log('Conexión exitosa');
     
-    // Consultar solo las bases de datos del usuario (excluyendo las del sistema)
     const result = await pool.request().query(`
       SELECT name 
       FROM sys.databases 

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { DatabaseConnectionForm } from './DatabaseConnectionForm';
@@ -19,9 +18,7 @@ export function DatabaseConfigForm() {
     username: 'sa',
     password: 'X3c1970213@mam@',
     trustServerCertificate: true,
-    encrypt: false,
-    // Inicializamos instanceName como undefined para que no se envíe si no es necesario
-    instanceName: undefined
+    encrypt: false
   });
 
   const [showServerStatus, setShowServerStatus] = useState(false);
@@ -38,7 +35,6 @@ export function DatabaseConfigForm() {
     }));
   }, [config.type]);
 
-  // One-time server status check with retry capability
   useEffect(() => {
     const checkServerStatus = async () => {
       try {
@@ -46,7 +42,6 @@ export function DatabaseConfigForm() {
         setCheckingServer(true);
         console.log('Verificando estado del servidor...');
         
-        // For local development, assume server is working by default
         const isLocalhost = window.location.hostname === 'localhost';
         if (isLocalhost) {
           setServerActive(true);
@@ -61,7 +56,6 @@ export function DatabaseConfigForm() {
           console.log('Servidor activo');
           setServerActive(true);
           setServerCheckError(null);
-          // Show success toast only once
           toast({
             title: "Conexión exitosa",
             description: "Servidor detectado correctamente",
@@ -81,12 +75,8 @@ export function DatabaseConfigForm() {
     };
 
     checkServerStatus();
-    
-    // Instead of frequent polling, let the user manually retry if needed
-    // This avoids excessive failed network requests
   }, []);
 
-  // Manual server check function
   const handleCheckServerStatus = async () => {
     try {
       setCheckingServer(true);

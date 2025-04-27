@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
@@ -22,27 +21,6 @@ export function ConnectionDetailsForm({ config, onConfigChange }: ConnectionDeta
           required
         />
       </div>
-
-      {config.type === 'sqlserver' && (
-        <div className="space-y-2">
-          <Label htmlFor="instanceName" className="font-bold">Nombre de Instancia (Opcional)</Label>
-          <Input
-            id="instanceName"
-            value={config.instanceName || ''}
-            onChange={(e) => {
-              const value = e.target.value.trim();
-              onConfigChange({ 
-                ...config, 
-                instanceName: value === '' ? undefined : value
-              });
-            }}
-            placeholder="Ej: SQLEXPRESS"
-          />
-          <p className="text-xs text-muted-foreground">
-            Solo necesario para instancias nombradas. Dejar en blanco para conexiones estándar.
-          </p>
-        </div>
-      )}
 
       <div className="space-y-2">
         <Label htmlFor="port" className="font-bold">Puerto</Label>
