@@ -1,4 +1,8 @@
+
+export type DatabaseType = 'sqlserver' | 'postgresql';
+
 export interface DatabaseConfig {
+  type: DatabaseType;
   host: string;
   port: number;
   database: string;
