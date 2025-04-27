@@ -1,5 +1,5 @@
 
-import { DatabaseConfigForm } from "@/components/DatabaseConfig";
+import { DatabaseConfigForm } from "@/components/database/DatabaseConfigForm";
 import { Database } from "lucide-react";
 import Signature from "@/components/Signature";
 
