@@ -6,20 +6,18 @@ class ApiService {
   private api: AxiosInstance;
 
   constructor() {
-    // Use a consistent API URL that works in any environment
-    const apiUrl = process.env.NODE_ENV === 'production' 
-      ? window.location.origin.replace(/:\d+$/, ':3002')
-      : 'http://localhost:3002';
+    // Define la URL del servidor backend explícitamente para evitar problemas de configuración
+    const backendUrl = 'http://localhost:3002';
     
     this.api = axios.create({
-      baseURL: apiUrl,
+      baseURL: backendUrl,
       headers: {
         'Content-Type': 'application/json',
       },
-      timeout: 10000, // Timeout incrementado para dar más tiempo al servidor
+      timeout: 15000, // Incrementamos el timeout para dar más margen a conexiones lentas
     });
 
-    console.log('API URL configurada:', apiUrl);
+    console.log('API URL configurada:', backendUrl);
   }
 
   async testDatabaseConnection(config: DatabaseConfig): Promise<ApiResponse<any>> {

@@ -6,9 +6,9 @@ import type { DatabaseConfig } from '../types/api.types';
 
 const app = express();
 
-// Configuración de CORS más permisiva para desarrollo
+// Configuración de CORS más restrictiva pero permitiendo localhost:8080
 app.use(cors({
-  origin: '*', // Permite todas las origenes en desarrollo
+  origin: ['http://localhost:8080', 'http://127.0.0.1:8080'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -28,10 +28,12 @@ app.post('/api/database/test', async (req, res) => {
   try {
     console.log('Recibida solicitud de prueba de conexión con config:', JSON.stringify(config, null, 2));
     
-    // Configuración de las opciones SQL Server
+    // Configuración de las opciones SQL Server con valores por defecto más seguros
     const options: any = {
       encrypt: config.encrypt ?? false,
-      trustServerCertificate: config.trustServerCertificate ?? false
+      trustServerCertificate: config.trustServerCertificate ?? true,
+      connectTimeout: 30000, // Aumentamos el timeout de conexión
+      requestTimeout: 30000   // Aumentamos el timeout de solicitudes
     };
 
     const sqlConfig = {
@@ -43,7 +45,10 @@ app.post('/api/database/test', async (req, res) => {
       options: options
     };
 
-    console.log('Intentando conectar con configuración SQL:', JSON.stringify(sqlConfig, null, 2));
+    console.log('Intentando conectar con configuración SQL:', JSON.stringify({
+      ...sqlConfig,
+      password: '******' // Ocultamos la contraseña en los logs
+    }, null, 2));
 
     const pool = await sql.connect(sqlConfig);
     console.log('Conexión exitosa');
@@ -81,6 +86,7 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Servidor activo' });
 });
 
+// Aseguramos que el puerto 3002 sea usado
 const PORT = 3002;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);

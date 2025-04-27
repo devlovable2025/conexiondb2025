@@ -28,7 +28,7 @@ export function ServerStatus({
         <div className="flex items-center justify-center gap-2">
           <span className={`flex items-center ${serverActive ? 'text-green-600' : 'text-red-600'}`}>
             <div className={`w-3 h-3 rounded-full mr-2 ${serverActive ? 'bg-green-600' : 'bg-red-600'}`} />
-            <span>{serverActive ? 'Servidor activo' : 'Servidor inactivo'}</span>
+            <span>{serverActive ? 'Servidor activo (Puerto 3002)' : 'Servidor inactivo (Puerto 3002)'}</span>
           </span>
           
           {onCheckServer && (
@@ -45,6 +45,9 @@ export function ServerStatus({
           )}
         </div>
       </div>
+      <CardDescription className="mt-2 text-xs">
+        Frontend: Puerto 8080 | Backend: Puerto 3002
+      </CardDescription>
     </CardHeader>
   );
 }
