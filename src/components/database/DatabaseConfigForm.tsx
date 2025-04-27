@@ -5,6 +5,7 @@ import { ServerStatus } from './ServerStatus';
 import { ConnectionStatus } from './ConnectionStatus';
 import { ServerInstructions } from './ServerInstructions';
 import type { DatabaseConfig } from '../../types/api.types';
+import { useDatabaseConnection } from '@/hooks/useDatabaseConnection';
 
 export function DatabaseConfigForm() {
   const [config, setConfig] = useState<DatabaseConfig>({
@@ -22,10 +23,9 @@ export function DatabaseConfigForm() {
   const [showServerStatus, setShowServerStatus] = useState(false);
   const [serverActive, setServerActive] = useState(false);
   const [serverCheckError, setServerCheckError] = useState<string | null>(null);
-  const [connectionStatus, setConnectionStatus] = useState<{
-    success: boolean;
-    message: string;
-  } | null>(null);
+  
+  // Use the connection hook to access connection status
+  const { connectionStatus, isConnectionTested } = useDatabaseConnection();
 
   useEffect(() => {
     setConfig(prev => ({
@@ -82,7 +82,7 @@ export function DatabaseConfigForm() {
           connectionStatus={connectionStatus} 
           serverActive={serverActive} 
           showServerStatus={showServerStatus} 
-          isConnectionTested={false}
+          isConnectionTested={isConnectionTested}
           serverCheckError={serverCheckError}
         />
         
