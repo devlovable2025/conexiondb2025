@@ -8,13 +8,15 @@ interface ConnectionStatusProps {
   serverActive: boolean;
   showServerStatus: boolean;
   isConnectionTested: boolean;
+  serverCheckError?: string | null;
 }
 
 export function ConnectionStatus({ 
   connectionStatus, 
   serverActive, 
   showServerStatus, 
-  isConnectionTested 
+  isConnectionTested,
+  serverCheckError
 }: ConnectionStatusProps) {
   if (!connectionStatus && !showServerStatus && isConnectionTested) return null;
 
@@ -42,6 +44,11 @@ export function ConnectionStatus({
             <p>El servidor backend no está en ejecución. Por favor, inicie el servidor con:</p>
             <pre className="bg-gray-100 p-2 rounded mt-2 text-sm overflow-auto">node src/server/index.js</pre>
             <p className="mt-2">Asegúrese de ejecutar este comando en una terminal separada.</p>
+            {serverCheckError && (
+              <div className="mt-2 text-sm font-medium">
+                Información adicional: {serverCheckError}
+              </div>
+            )}
           </AlertDescription>
         </Alert>
       )}

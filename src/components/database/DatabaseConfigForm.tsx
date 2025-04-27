@@ -28,6 +28,7 @@ export function DatabaseConfigForm() {
   } | null>(null);
   const [showServerStatus, setShowServerStatus] = useState(false);
   const [serverActive, setServerActive] = useState(false);
+  const [serverCheckError, setServerCheckError] = useState<string | null>(null);
 
   useEffect(() => {
     setConfig(prev => ({
@@ -40,15 +41,33 @@ export function DatabaseConfigForm() {
     const checkServerStatus = async () => {
       try {
         setShowServerStatus(true);
-        const response = await fetch('http://localhost:8000/api/health');
+        console.log('Verificando estado del servidor en:', 'http://localhost:8000/api/health');
+        const response = await fetch('http://localhost:8000/api/health', { 
+          // Agregamos un timeout para que no se quede esperando mucho tiempo
+          signal: AbortSignal.timeout(3000)
+        });
+        
         if (response.ok) {
+          console.log('Servidor activo, respuesta:', await response.json());
           setServerActive(true);
+          setServerCheckError(null);
         } else {
+          console.log('Servidor inactivo, código de estado:', response.status);
           setServerActive(false);
+          setServerCheckError(`Error del servidor: ${response.status}`);
         }
       } catch (error) {
         console.error('Error al verificar el estado del servidor:', error);
         setServerActive(false);
+        
+        // Verificar si el error es porque está usando la app desde Lovable (no local)
+        const isRunningInLovable = window.location.hostname.includes('lovable');
+        
+        if (isRunningInLovable) {
+          setServerCheckError("La aplicación está corriendo en el entorno de Lovable. Para acceder al servidor backend, debes ejecutarlo localmente.");
+        } else {
+          setServerCheckError("No se pudo conectar al servidor backend. Asegúrate de que esté corriendo en http://localhost:8000");
+        }
       }
     };
 
@@ -66,7 +85,8 @@ export function DatabaseConfigForm() {
           connectionStatus={connectionStatus} 
           serverActive={serverActive} 
           showServerStatus={showServerStatus} 
-          isConnectionTested={isConnectionTested} 
+          isConnectionTested={isConnectionTested}
+          serverCheckError={serverCheckError}
         />
         
         <DatabaseConnectionForm

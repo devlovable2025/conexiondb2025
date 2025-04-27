@@ -50,8 +50,15 @@ export function ServerInstructions() {
               
               <div>
                 <h3 className="font-medium mb-2">4. Ejecutar el servidor</h3>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Usa uno de los siguientes comandos dependiendo de tu entorno:
+                </p>
                 <code className="bg-secondary p-2 rounded block text-sm mt-1">
                   node src/server/index.js
+                </code>
+                <p className="text-sm text-muted-foreground mt-2">O si estás usando TypeScript directamente:</p>
+                <code className="bg-secondary p-2 rounded block text-sm mt-1">
+                  ts-node src/server/index.ts
                 </code>
               </div>
               
@@ -61,6 +68,17 @@ export function ServerInstructions() {
                 <AlertDescription>
                   El servidor debe mantenerse en ejecución mientras uses la aplicación. 
                   Verás un mensaje de "Servidor activo" cuando esté funcionando correctamente.
+                </AlertDescription>
+              </Alert>
+
+              <Alert className="mt-4">
+                <InfoIcon className="h-4 w-4" />
+                <AlertTitle>Información de puertos</AlertTitle>
+                <AlertDescription>
+                  <ul className="list-disc pl-5 space-y-1 mt-2">
+                    <li>Servidor Frontend (Vite): <span className="font-mono">http://localhost:8080</span></li>
+                    <li>Servidor Backend (Express): <span className="font-mono">http://localhost:8000</span></li>
+                  </ul>
                 </AlertDescription>
               </Alert>
             </div>
