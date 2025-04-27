@@ -64,15 +64,21 @@ export function DatabaseConfigForm() {
     }
   };
 
+  const databases = [
+    { value: 'db1', label: 'Base de datos 1' },
+    { value: 'db2', label: 'Base de datos 2' },
+    { value: 'db3', label: 'Base de datos 3' },
+  ];
+
   return (
     <div className="flex justify-center items-center min-h-[calc(100vh-200px)]">
-      <Card className="w-full max-w-md shadow-lg">
+      <Card className="w-full max-w-3xl shadow-lg">
         <CardHeader>
           <CardTitle className="text-center">Configuración de Base de Datos</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="dbType">Tipo de Base de Datos</Label>
                 <Select
@@ -136,12 +142,21 @@ export function DatabaseConfigForm() {
 
               <div className="space-y-2">
                 <Label htmlFor="database">Base de datos</Label>
-                <Input
-                  id="database"
+                <Select
                   value={config.database}
-                  onChange={(e) => setConfig({ ...config, database: e.target.value })}
-                  required
-                />
+                  onValueChange={(value: string) => setConfig({ ...config, database: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona la base de datos" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {databases.map((db) => (
+                      <SelectItem key={db.value} value={db.value}>
+                        {db.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">
@@ -165,9 +180,11 @@ export function DatabaseConfigForm() {
                 />
               </div>
 
-              <Button type="submit" className="w-full mt-4">
-                Probar Conexión
-              </Button>
+              <div className="col-span-2">
+                <Button type="submit" className="w-full mt-4">
+                  Probar Conexión
+                </Button>
+              </div>
             </div>
           </form>
         </CardContent>
