@@ -10,10 +10,13 @@ import type { DatabaseConfig } from '../types/api.types';
 export function DatabaseConfigForm() {
   const [config, setConfig] = useState<DatabaseConfig>({
     host: '',
-    port: 5432,
+    port: 1433, // Puerto por defecto de SQL Server
     database: '',
     username: '',
     password: '',
+    trustServerCertificate: true,
+    encrypt: false,
+    instanceName: ''
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,7 +26,7 @@ export function DatabaseConfigForm() {
       if (response.success) {
         toast({
           title: "Conexión exitosa",
-          description: "La conexión a la base de datos se estableció correctamente.",
+          description: "La conexión a la base de datos SQL Server se estableció correctamente.",
         });
       } else {
         toast({
@@ -56,13 +59,23 @@ export function DatabaseConfigForm() {
         </div>
 
         <div className="space-y-2">
+          <Label htmlFor="instanceName">Nombre de Instancia (opcional)</Label>
+          <Input
+            id="instanceName"
+            value={config.instanceName}
+            onChange={(e) => setConfig({ ...config, instanceName: e.target.value })}
+            placeholder="SQLEXPRESS"
+          />
+        </div>
+
+        <div className="space-y-2">
           <Label htmlFor="port">Puerto</Label>
           <Input
             id="port"
             type="number"
             value={config.port}
             onChange={(e) => setConfig({ ...config, port: Number(e.target.value) })}
-            placeholder="5432"
+            placeholder="1433"
             required
           />
         </div>
