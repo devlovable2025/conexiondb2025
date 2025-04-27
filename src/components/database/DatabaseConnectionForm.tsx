@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
@@ -14,7 +15,7 @@ interface DatabaseConnectionFormProps {
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   databases: Array<{ value: string; label: string; }>;
-  setDatabases: React.Dispatch<React.SetStateAction<Array<{ value: string; label: string; }>>;
+  setDatabases: React.Dispatch<React.SetStateAction<Array<{ value: string; label: string; }>>>;
   isConnectionTested: boolean;
   setIsConnectionTested: React.Dispatch<React.SetStateAction<boolean>>;
   setConnectionStatus: React.Dispatch<React.SetStateAction<{ success: boolean; message: string; } | null>>;
