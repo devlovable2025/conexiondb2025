@@ -1,4 +1,3 @@
-
 import express from 'express';
 import cors from 'cors';
 import sql from 'mssql';
@@ -81,8 +80,8 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Servidor activo' });
 });
 
-const PORT = 3000;
+const PORT = 8000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
-  console.log('Para probar el servidor: http://localhost:3000/api/health');
+  console.log('Para probar el servidor: http://localhost:8000/api/health');
 });
