@@ -16,7 +16,7 @@ class ApiService {
       headers: {
         'Content-Type': 'application/json',
       },
-      timeout: 10000, // Incrementado el timeout para dar más tiempo al servidor
+      timeout: 10000, // Timeout incrementado para dar más tiempo al servidor
     });
 
     console.log('API URL configurada:', apiUrl);
@@ -60,7 +60,7 @@ class ApiService {
       console.log('Verificando estado del servidor en:', `${this.api.defaults.baseURL}/api/health`);
       // Use a short timeout just for health checks
       const response = await axios.get(`${this.api.defaults.baseURL}/api/health`, {
-        timeout: 5000 // Incrementado el tiempo de espera para la verificación del servidor
+        timeout: 5000 // Timeout para la verificación del servidor
       });
       return response.status === 200;
     } catch (error) {

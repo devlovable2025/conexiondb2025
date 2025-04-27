@@ -1,3 +1,4 @@
+
 import express from 'express';
 import cors from 'cors';
 import sql from 'mssql';
@@ -25,6 +26,9 @@ app.post('/api/database/test', async (req, res) => {
   const config: DatabaseConfig = req.body;
   
   try {
+    console.log('Recibida solicitud de prueba de conexión con config:', JSON.stringify(config, null, 2));
+    
+    // Configuración de las opciones SQL Server
     const options: any = {
       encrypt: config.encrypt ?? false,
       trustServerCertificate: config.trustServerCertificate ?? false

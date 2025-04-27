@@ -26,10 +26,10 @@ export function ServerStatus({
       </CardTitle>
       <div className="mt-4">
         <div className="flex items-center justify-center gap-2">
-          <CardDescription className={`flex items-center ${serverActive ? 'text-green-600' : 'text-red-600'}`}>
+          <span className={`flex items-center ${serverActive ? 'text-green-600' : 'text-red-600'}`}>
             <div className={`w-3 h-3 rounded-full mr-2 ${serverActive ? 'bg-green-600' : 'bg-red-600'}`} />
             <span>{serverActive ? 'Servidor activo' : 'Servidor inactivo'}</span>
-          </CardDescription>
+          </span>
           
           {onCheckServer && (
             <Button 

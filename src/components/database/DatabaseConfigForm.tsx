@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { DatabaseConnectionForm } from './DatabaseConnectionForm';
@@ -42,14 +43,6 @@ export function DatabaseConfigForm() {
         setCheckingServer(true);
         console.log('Verificando estado del servidor...');
         
-        const isLocalhost = window.location.hostname === 'localhost';
-        if (isLocalhost) {
-          setServerActive(true);
-          setServerCheckError(null);
-          setCheckingServer(false);
-          return;
-        }
-
         const isActive = await apiService.checkServerStatus();
         
         if (isActive) {
@@ -63,12 +56,12 @@ export function DatabaseConfigForm() {
         } else {
           console.log('Servidor inactivo');
           setServerActive(false);
-          setServerCheckError("No se pudo conectar al servidor backend. Asegúrate de que esté corriendo en http://localhost:8000");
+          setServerCheckError("No se pudo conectar al servidor backend. Asegúrate de que esté corriendo en http://localhost:3002");
         }
       } catch (error) {
         console.error('Error al verificar el estado del servidor:', error);
         setServerActive(false);
-        setServerCheckError("Error al conectar con el servidor. Verifica que esté ejecutándose en http://localhost:8000");
+        setServerCheckError("Error al conectar con el servidor. Verifica que esté ejecutándose en http://localhost:3002");
       } finally {
         setCheckingServer(false);
       }
@@ -91,10 +84,10 @@ export function DatabaseConfigForm() {
         });
       } else {
         setServerActive(false);
-        setServerCheckError("No se pudo conectar al servidor backend. Asegúrate de que esté corriendo en http://localhost:8000");
+        setServerCheckError("No se pudo conectar al servidor backend. Asegúrate de que esté corriendo en http://localhost:3002");
         toast({
           title: "Error de conexión",
-          description: "No se puede conectar al servidor en http://localhost:8000",
+          description: "No se puede conectar al servidor en http://localhost:3002",
           variant: "destructive",
         });
       }
@@ -103,7 +96,7 @@ export function DatabaseConfigForm() {
       setServerCheckError("Error al conectar con el servidor");
       toast({
         title: "Error de conexión",
-        description: "No se puede conectar al servidor en http://localhost:8000",
+        description: "No se puede conectar al servidor en http://localhost:3002",
         variant: "destructive",
       });
     } finally {
@@ -132,7 +125,7 @@ export function DatabaseConfigForm() {
         <DatabaseConnectionForm
           config={config}
           setConfig={setConfig}
-          serverActive={serverActive || window.location.hostname === 'localhost'}
+          serverActive={serverActive}
         />
         
         <div className="px-6 pb-6">
