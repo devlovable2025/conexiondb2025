@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -23,8 +24,8 @@ export function DatabaseConfigForm() {
   const [config, setConfig] = useState<DatabaseConfig>({
     type: 'sqlserver',
     host: '205.209.122.84',
-    port: 1437,
-    database: '',
+    port: 1437, // Corrected port number
+    database: 'Presupuesto', // Added the specific database name
     username: 'sa',
     password: 'X3c1970213@mam@',
     trustServerCertificate: true,
@@ -49,7 +50,7 @@ export function DatabaseConfigForm() {
       if (response.success) {
         setIsConnectionTested(true);
         const mockDatabases = [
-          { value: 'db1', label: 'Base de datos 1' },
+          { value: 'Presupuesto', label: 'Presupuesto' },
           { value: 'db2', label: 'Base de datos 2' },
           { value: 'db3', label: 'Base de datos 3' },
         ];
