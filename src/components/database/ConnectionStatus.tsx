@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { InfoIcon, AlertCircleIcon } from 'lucide-react';
+import { InfoIcon, AlertCircle as AlertCircleIcon } from 'lucide-react';
 
 interface ConnectionStatusProps {
   connectionStatus: { success: boolean; message: string; } | null;
@@ -18,6 +18,7 @@ export function ConnectionStatus({
   isConnectionTested,
   serverCheckError
 }: ConnectionStatusProps) {
+  // Solo mostramos si hay alguna información relevante para mostrar
   if (!connectionStatus && !showServerStatus && !isConnectionTested) return null;
 
   return (

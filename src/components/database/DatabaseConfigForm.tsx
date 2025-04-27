@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { Card } from '@/components/ui/card';
 import { DatabaseConnectionForm } from './DatabaseConnectionForm';
 import { ServerStatus } from './ServerStatus';
 import { ConnectionStatus } from './ConnectionStatus';
@@ -24,7 +25,6 @@ export function DatabaseConfigForm() {
   const [serverActive, setServerActive] = useState(false);
   const [serverCheckError, setServerCheckError] = useState<string | null>(null);
   
-  // Use the connection hook to get connection status
   const { connectionStatus, isConnectionTested } = useDatabaseConnection();
 
   useEffect(() => {
@@ -56,7 +56,6 @@ export function DatabaseConfigForm() {
         console.error('Error al verificar el estado del servidor:', error);
         setServerActive(false);
         
-        // Verificar si el error es porque está usando la app desde Lovable (no local)
         const isRunningInLovable = window.location.hostname.includes('lovable');
         
         if (isRunningInLovable) {
@@ -74,7 +73,7 @@ export function DatabaseConfigForm() {
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-200px)] px-4">
-      <div className="w-full max-w-3xl mx-auto shadow-lg font-sans">
+      <Card className="w-full max-w-3xl mx-auto shadow-lg font-sans">
         <ServerStatus showServerStatus={showServerStatus} serverActive={serverActive} />
         
         <ConnectionStatus 
@@ -94,7 +93,7 @@ export function DatabaseConfigForm() {
         <div className="px-6 pb-6">
           <ServerInstructions />
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

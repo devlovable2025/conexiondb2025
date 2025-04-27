@@ -54,12 +54,19 @@ export function useDatabaseConnection() {
     }
   };
 
+  const resetConnection = () => {
+    setIsConnectionTested(false);
+    setConnectionStatus(null);
+    setDatabases([]);
+  };
+
   return {
     isLoading,
     isConnectionTested,
     connectionStatus,
     databases,
     testConnection,
-    setIsConnectionTested
+    setIsConnectionTested,
+    resetConnection
   };
 }
