@@ -6,12 +6,17 @@ class ApiService {
   private api: AxiosInstance;
 
   constructor() {
+    // Use a consistent API URL that works in any environment
+    const apiUrl = process.env.NODE_ENV === 'production' 
+      ? window.location.origin.replace(/:\d+$/, ':8000') // Replace port with 8000 in production
+      : 'http://localhost:8000'; // Default to localhost:8000 in development
+    
     this.api = axios.create({
-      baseURL: window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'http://localhost:8000',
+      baseURL: apiUrl,
       headers: {
         'Content-Type': 'application/json',
       },
-      timeout: 10000,
+      timeout: 5000, // Reduced timeout for faster error feedback
     });
   }
 
@@ -44,6 +49,20 @@ class ApiService {
         success: false,
         error: errorMessage,
       };
+    }
+  }
+
+  // Helper method to check server status
+  async checkServerStatus(): Promise<boolean> {
+    try {
+      // Use a short timeout just for health checks
+      const response = await axios.get(`${this.api.defaults.baseURL}/api/health`, {
+        timeout: 2000
+      });
+      return response.status === 200;
+    } catch (error) {
+      console.log('Server status check failed:', error);
+      return false;
     }
   }
 }

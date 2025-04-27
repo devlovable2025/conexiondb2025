@@ -7,6 +7,8 @@ import { ConnectionStatus } from './ConnectionStatus';
 import { ServerInstructions } from './ServerInstructions';
 import type { DatabaseConfig } from '../../types/api.types';
 import { useDatabaseConnection } from '@/hooks/useDatabaseConnection';
+import { apiService } from '@/services/api.service';
+import { toast } from '@/hooks/use-toast';
 
 export function DatabaseConfigForm() {
   const [config, setConfig] = useState<DatabaseConfig>({
@@ -24,6 +26,7 @@ export function DatabaseConfigForm() {
   const [showServerStatus, setShowServerStatus] = useState(false);
   const [serverActive, setServerActive] = useState(false);
   const [serverCheckError, setServerCheckError] = useState<string | null>(null);
+  const [checkingServer, setCheckingServer] = useState(false);
   
   const { connectionStatus, isConnectionTested } = useDatabaseConnection();
 
@@ -34,68 +37,98 @@ export function DatabaseConfigForm() {
     }));
   }, [config.type]);
 
+  // One-time server status check with retry capability
   useEffect(() => {
     const checkServerStatus = async () => {
       try {
         setShowServerStatus(true);
-        console.log('Verificando estado del servidor en:', 'http://localhost:8000/api/health');
+        setCheckingServer(true);
+        console.log('Verificando estado del servidor...');
         
-        // Agregamos un timeout corto para evitar bloqueos
-        const response = await fetch('http://localhost:8000/api/health', { 
-          signal: AbortSignal.timeout(3000)
-        });
-        
-        if (response.ok) {
-          console.log('Servidor activo, respuesta:', await response.json());
+        // For local development, assume server is working by default
+        const isLocalhost = window.location.hostname === 'localhost';
+        if (isLocalhost) {
           setServerActive(true);
           setServerCheckError(null);
+          setCheckingServer(false);
+          return;
+        }
+
+        const isActive = await apiService.checkServerStatus();
+        
+        if (isActive) {
+          console.log('Servidor activo');
+          setServerActive(true);
+          setServerCheckError(null);
+          // Show success toast only once
+          toast({
+            title: "Conexión exitosa",
+            description: "Servidor detectado correctamente",
+          });
         } else {
-          console.log('Servidor inactivo, código de estado:', response.status);
+          console.log('Servidor inactivo');
           setServerActive(false);
-          setServerCheckError(`Error del servidor: ${response.status}`);
+          setServerCheckError("No se pudo conectar al servidor backend. Asegúrate de que esté corriendo en http://localhost:8000");
         }
       } catch (error) {
         console.error('Error al verificar el estado del servidor:', error);
-        
-        // Asumimos que el servidor está activo si estamos ejecutando localmente
-        const isLocalhost = window.location.hostname === 'localhost';
-        if (isLocalhost) {
-          console.log('Ejecutando en localhost, asumiendo servidor activo');
-          setServerActive(true);
-          setServerCheckError(null);
-          return;
-        }
-        
         setServerActive(false);
-        
-        const isRunningInLovable = window.location.hostname.includes('lovable');
-        
-        if (isRunningInLovable) {
-          setServerCheckError("La aplicación está corriendo en el entorno de Lovable. Para acceder al servidor backend, debes ejecutarlo localmente.");
-        } else {
-          setServerCheckError("No se pudo conectar al servidor backend. Asegúrate de que esté corriendo en http://localhost:8000");
-        }
+        setServerCheckError("Error al conectar con el servidor. Verifica que esté ejecutándose en http://localhost:8000");
+      } finally {
+        setCheckingServer(false);
       }
     };
 
     checkServerStatus();
-    const interval = setInterval(checkServerStatus, 10000);
-    return () => clearInterval(interval);
+    
+    // Instead of frequent polling, let the user manually retry if needed
+    // This avoids excessive failed network requests
   }, []);
 
-  // Si estamos en localhost o el usuario ya ha confirmado que el servidor está activo, 
-  // vamos a asumir que el servidor está activo
-  useEffect(() => {
-    const isLocalhost = window.location.hostname === 'localhost';
-    if (isLocalhost) {
-      setServerActive(true);
+  // Manual server check function
+  const handleCheckServerStatus = async () => {
+    try {
+      setCheckingServer(true);
+      const isActive = await apiService.checkServerStatus();
+      
+      if (isActive) {
+        setServerActive(true);
+        setServerCheckError(null);
+        toast({
+          title: "Conexión exitosa",
+          description: "Servidor detectado correctamente",
+        });
+      } else {
+        setServerActive(false);
+        setServerCheckError("No se pudo conectar al servidor backend. Asegúrate de que esté corriendo en http://localhost:8000");
+        toast({
+          title: "Error de conexión",
+          description: "No se puede conectar al servidor en http://localhost:8000",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      setServerActive(false);
+      setServerCheckError("Error al conectar con el servidor");
+      toast({
+        title: "Error de conexión",
+        description: "No se puede conectar al servidor en http://localhost:8000",
+        variant: "destructive",
+      });
+    } finally {
+      setCheckingServer(false);
     }
-  }, []);
+  };
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-200px)] px-4">
       <Card className="w-full max-w-3xl mx-auto shadow-lg font-sans">
-        <ServerStatus showServerStatus={showServerStatus} serverActive={serverActive} />
+        <ServerStatus 
+          showServerStatus={showServerStatus} 
+          serverActive={serverActive} 
+          checkingServer={checkingServer}
+          onCheckServer={handleCheckServerStatus}
+        />
         
         <ConnectionStatus 
           connectionStatus={connectionStatus} 

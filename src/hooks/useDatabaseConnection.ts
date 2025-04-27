@@ -11,11 +11,30 @@ export function useDatabaseConnection() {
   const [databases, setDatabases] = useState<Array<{ value: string; label: string; }>>([]);
 
   const testConnection = async (config: DatabaseConfig) => {
+    // Reset previous state
     setIsLoading(true);
     setConnectionStatus(null);
     
     try {
       console.log("Iniciando prueba de conexión con config:", config);
+      
+      // First check if the server is running
+      const serverRunning = await apiService.checkServerStatus();
+      if (!serverRunning) {
+        setIsLoading(false);
+        setConnectionStatus({
+          success: false,
+          message: 'Error de red: No se puede conectar al servidor. Asegúrese de que el servidor esté en ejecución en http://localhost:8000'
+        });
+        toast({
+          title: "Error de conexión",
+          description: "No se puede conectar al servidor. Verifique que esté ejecutándose.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // If server is running, test database connection
       const response = await apiService.testDatabaseConnection(config);
       console.log("Respuesta recibida:", response);
       setIsLoading(false);
@@ -29,7 +48,7 @@ export function useDatabaseConnection() {
         });
         toast({
           title: "Conexión exitosa",
-          description: "Por favor, seleccione una base de datos",
+          description: response.message || "Conexión establecida correctamente",
         });
       } else {
         setConnectionStatus({

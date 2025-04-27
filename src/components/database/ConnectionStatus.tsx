@@ -42,14 +42,16 @@ export function ConnectionStatus({
           <AlertCircleIcon className="h-4 w-4 mr-2" />
           <AlertTitle>Servidor no detectado</AlertTitle>
           <AlertDescription>
-            <p>El servidor backend no está en ejecución. Por favor, inicie el servidor con:</p>
-            <pre className="bg-gray-100 p-2 rounded mt-2 text-sm overflow-auto">node src/server/index.js</pre>
-            <p className="mt-2">Asegúrese de ejecutar este comando en una terminal separada.</p>
-            {serverCheckError && (
-              <div className="mt-2 text-sm font-medium">
-                Información adicional: {serverCheckError}
-              </div>
-            )}
+            <div>
+              <p>El servidor backend no está en ejecución. Por favor, inicie el servidor con:</p>
+              <pre className="bg-gray-100 p-2 rounded mt-2 text-sm overflow-auto">node src/server/index.js</pre>
+              <p className="mt-2">Asegúrese de ejecutar este comando en una terminal separada.</p>
+              {serverCheckError && (
+                <div className="mt-2 text-sm font-medium">
+                  Información adicional: {serverCheckError}
+                </div>
+              )}
+            </div>
           </AlertDescription>
         </Alert>
       )}
