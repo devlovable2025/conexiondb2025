@@ -25,12 +25,15 @@ export function ConnectionDetailsForm({ config, onConfigChange }: ConnectionDeta
 
       {config.type === 'sqlserver' && (
         <div className="space-y-2">
-          <Label htmlFor="instanceName" className="font-bold">Nombre de Instancia</Label>
+          <Label htmlFor="instanceName" className="font-bold">Nombre de Instancia (Opcional)</Label>
           <Input
             id="instanceName"
-            value={config.instanceName}
-            onChange={(e) => onConfigChange({ ...config, instanceName: e.target.value })}
-            placeholder="MOBILSOFT"
+            value={config.instanceName || ''}
+            onChange={(e) => onConfigChange({ 
+              ...config, 
+              instanceName: e.target.value || undefined 
+            })}
+            placeholder="Ej: MOBILSOFT, SQLEXPRESS"
           />
         </div>
       )}

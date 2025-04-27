@@ -10,7 +10,7 @@ export interface DatabaseConfig {
   password: string;
   trustServerCertificate?: boolean; // Específico para SQL Server
   encrypt?: boolean; // Específico para SQL Server
-  instanceName?: string; // Para instancias nombradas de SQL Server
+  instanceName?: string; // Ahora es completamente opcional
 }
 
 export interface ApiResponse<T> {
