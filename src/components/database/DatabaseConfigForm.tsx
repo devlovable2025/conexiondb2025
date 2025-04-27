@@ -18,8 +18,8 @@ export function DatabaseConfigForm() {
     database: 'Presupuesto',
     username: 'sa',
     password: 'X3c1970213@mam@',
-    trustServerCertificate: false, // Cambiado a false como solicitaste
-    encrypt: false
+    trustServerCertificate: false, // Explicitly set to false
+    encrypt: true // Set to true as requested
   });
 
   const [showServerStatus, setShowServerStatus] = useState(false);
