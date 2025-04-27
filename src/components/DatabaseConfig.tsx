@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -21,7 +20,15 @@ import { toast } from '@/hooks/use-toast';
 import { apiService } from '../services/api.service';
 import type { DatabaseConfig, DatabaseType } from '../types/api.types';
 import { Alert, AlertTitle, AlertDescription } from './ui/alert';
-import { InfoIcon, AlertCircleIcon, DatabaseIcon } from 'lucide-react';
+import { InfoIcon, AlertCircleIcon, DatabaseIcon, Terminal } from 'lucide-react';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 
 export function DatabaseConfigForm() {
   const [config, setConfig] = useState<DatabaseConfig>({
@@ -53,7 +60,6 @@ export function DatabaseConfigForm() {
     }));
   }, [config.type]);
 
-  // Verificar si el servidor está activo
   useEffect(() => {
     const checkServerStatus = async () => {
       try {
@@ -71,7 +77,6 @@ export function DatabaseConfigForm() {
     };
 
     checkServerStatus();
-    // Verificar cada 10 segundos
     const interval = setInterval(checkServerStatus, 10000);
     return () => clearInterval(interval);
   }, []);
@@ -137,16 +142,79 @@ export function DatabaseConfigForm() {
     });
   };
 
+  const ServerInstructions = () => (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="outline" className="gap-2">
+          <Terminal className="h-4 w-4" />
+          Ver instrucciones del servidor
+        </Button>
+      </SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Instrucciones para ejecutar el servidor</SheetTitle>
+          <SheetDescription>
+            <div className="mt-4 space-y-4">
+              <div>
+                <h3 className="font-medium mb-2">1. Abrir una terminal en tu sistema</h3>
+                <p className="text-sm text-muted-foreground">
+                  Abre CMD, PowerShell, o la terminal de tu sistema operativo
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="font-medium mb-2">2. Navegar al directorio del proyecto</h3>
+                <p className="text-sm text-muted-foreground">
+                  Usa el comando cd para navegar hasta la carpeta raíz de tu proyecto
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="font-medium mb-2">3. Instalar dependencias</h3>
+                <code className="bg-secondary p-2 rounded block text-sm mt-1">
+                  npm install
+                </code>
+              </div>
+              
+              <div>
+                <h3 className="font-medium mb-2">4. Ejecutar el servidor</h3>
+                <code className="bg-secondary p-2 rounded block text-sm mt-1">
+                  node src/server/index.js
+                </code>
+              </div>
+              
+              <Alert className="mt-4">
+                <InfoIcon className="h-4 w-4" />
+                <AlertTitle>Nota</AlertTitle>
+                <AlertDescription>
+                  El servidor debe mantenerse en ejecución mientras uses la aplicación. 
+                  Verás un mensaje de "Servidor activo" cuando esté funcionando correctamente.
+                </AlertDescription>
+              </Alert>
+            </div>
+          </SheetDescription>
+        </SheetHeader>
+      </SheetContent>
+    </Sheet>
+  );
+
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-200px)] px-4">
       <Card className="w-full max-w-3xl mx-auto shadow-lg font-sans">
         <CardHeader className="text-center mb-4">
           <CardTitle className="font-bold text-2xl mt-2">Mobilsoft - Gestor de Conexiones</CardTitle>
           {showServerStatus && (
-            <CardDescription className={`mt-2 flex items-center justify-center ${serverActive ? 'text-green-600' : 'text-red-600'}`}>
-              <div className={`w-3 h-3 rounded-full mr-2 ${serverActive ? 'bg-green-600' : 'bg-red-600'}`}></div>
-              {serverActive ? 'Servidor activo' : 'Servidor inactivo - Ejecute "node src/server/index.js"'}
-            </CardDescription>
+            <div className="mt-4 space-y-4">
+              <CardDescription className={`mt-2 flex items-center justify-center ${serverActive ? 'text-green-600' : 'text-red-600'}`}>
+                <div className={`w-3 h-3 rounded-full mr-2 ${serverActive ? 'bg-green-600' : 'bg-red-600'}`}></div>
+                {serverActive ? 'Servidor activo' : 'Servidor inactivo'}
+              </CardDescription>
+              {!serverActive && (
+                <div className="flex justify-center">
+                  <ServerInstructions />
+                </div>
+              )}
+            </div>
           )}
         </CardHeader>
         <CardContent>
