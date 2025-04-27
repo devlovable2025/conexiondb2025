@@ -20,7 +20,8 @@ export function DatabaseConfigForm() {
     password: 'X3c1970213@mam@',
     trustServerCertificate: true,
     encrypt: false,
-    instanceName: 'mobilsoft'
+    // Inicializamos instanceName como undefined para que no se envíe si no es necesario
+    instanceName: undefined
   });
 
   const [showServerStatus, setShowServerStatus] = useState(false);

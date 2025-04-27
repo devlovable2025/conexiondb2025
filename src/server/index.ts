@@ -1,3 +1,4 @@
+
 import express from 'express';
 import cors from 'cors';
 import sql from 'mssql';
@@ -27,17 +28,24 @@ app.post('/api/database/test', async (req, res) => {
   console.log('Recibida solicitud de prueba de conexión con configuración:', JSON.stringify(config, null, 2));
   
   try {
+    // Crear opciones base
+    const options: any = {
+      encrypt: config.encrypt ?? false,
+      trustServerCertificate: config.trustServerCertificate ?? false
+    };
+
+    // Solo agregar instanceName si existe y no está vacío
+    if (config.instanceName && config.instanceName.trim() !== '') {
+      options.instanceName = config.instanceName;
+    }
+
     const sqlConfig = {
       user: config.username,
       password: config.password,
       server: config.host,
       port: config.port,
       database: config.database,
-      options: {
-        encrypt: config.encrypt ?? false,
-        trustServerCertificate: config.trustServerCertificate ?? false,
-        instanceName: config.instanceName
-      }
+      options: options
     };
 
     console.log('Intentando conectar con configuración SQL:', JSON.stringify(sqlConfig, null, 2));

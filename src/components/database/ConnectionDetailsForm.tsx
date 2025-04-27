@@ -29,12 +29,18 @@ export function ConnectionDetailsForm({ config, onConfigChange }: ConnectionDeta
           <Input
             id="instanceName"
             value={config.instanceName || ''}
-            onChange={(e) => onConfigChange({ 
-              ...config, 
-              instanceName: e.target.value || undefined 
-            })}
-            placeholder="Ej: MOBILSOFT, SQLEXPRESS"
+            onChange={(e) => {
+              const value = e.target.value.trim();
+              onConfigChange({ 
+                ...config, 
+                instanceName: value === '' ? undefined : value
+              });
+            }}
+            placeholder="Ej: SQLEXPRESS"
           />
+          <p className="text-xs text-muted-foreground">
+            Solo necesario para instancias nombradas. Dejar en blanco para conexiones estándar.
+          </p>
         </div>
       )}
 
