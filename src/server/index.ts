@@ -1,4 +1,3 @@
-
 import express from 'express';
 import cors from 'cors';
 import sql from 'mssql';
@@ -26,36 +25,25 @@ app.post('/api/database/test', async (req, res) => {
   const config: DatabaseConfig = req.body;
   
   try {
-    console.log('Recibida configuración SQL:', JSON.stringify(config, null, 2));
-    
-    if (config.type !== 'sqlserver') {
-      return res.status(400).json({
-        success: false,
-        error: 'Solo se soporta SQL Server por el momento'
-      });
-    }
+    const options: any = {
+      encrypt: config.encrypt ?? false,
+      trustServerCertificate: config.trustServerCertificate ?? false
+    };
 
     const sqlConfig = {
       user: config.username,
       password: config.password,
       server: config.host,
       port: config.port,
-      options: {
-        encrypt: config.encrypt ?? false,
-        trustServerCertificate: config.trustServerCertificate ?? true
-      }
+      database: config.database,
+      options: options
     };
 
-    console.log('Intentando conectar con configuración SQL:', JSON.stringify({
-      ...sqlConfig,
-      password: '********' // No mostrar la contraseña en los logs
-    }, null, 2));
+    console.log('Intentando conectar con configuración SQL:', JSON.stringify(sqlConfig, null, 2));
 
-    // Primer intento de conexión sin especificar una base de datos
     const pool = await sql.connect(sqlConfig);
-    console.log('Conexión inicial exitosa');
+    console.log('Conexión exitosa');
     
-    // Buscar bases de datos disponibles
     const result = await pool.request().query(`
       SELECT name 
       FROM sys.databases 
@@ -79,7 +67,7 @@ app.post('/api/database/test', async (req, res) => {
     console.error('Error al conectar:', error);
     return res.status(500).json({
       success: false,
-      error: error instanceof Error ? `Error de conexión: ${error.message}` : 'Error desconocido al conectar'
+      error: error instanceof Error ? error.message : 'Error desconocido al conectar'
     });
   }
 });
@@ -93,5 +81,4 @@ const PORT = 3002;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
   console.log(`Para probar el servidor: http://localhost:${PORT}/api/health`);
-  console.log(`El cliente web debería estar en http://localhost:8080`);
 });

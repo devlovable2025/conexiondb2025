@@ -6,15 +6,17 @@ class ApiService {
   private api: AxiosInstance;
 
   constructor() {
-    // Backend API siempre en 3002
-    const apiUrl = 'http://localhost:3002';
+    // Use a consistent API URL that works in any environment
+    const apiUrl = process.env.NODE_ENV === 'production' 
+      ? window.location.origin.replace(/:\d+$/, ':3002')
+      : 'http://localhost:3002';
     
     this.api = axios.create({
       baseURL: apiUrl,
       headers: {
         'Content-Type': 'application/json',
       },
-      timeout: 15000, // Incrementado el timeout para dar más tiempo al servidor
+      timeout: 10000, // Incrementado el timeout para dar más tiempo al servidor
     });
 
     console.log('API URL configurada:', apiUrl);
@@ -58,7 +60,7 @@ class ApiService {
       console.log('Verificando estado del servidor en:', `${this.api.defaults.baseURL}/api/health`);
       // Use a short timeout just for health checks
       const response = await axios.get(`${this.api.defaults.baseURL}/api/health`, {
-        timeout: 5000
+        timeout: 5000 // Incrementado el tiempo de espera para la verificación del servidor
       });
       return response.status === 200;
     } catch (error) {

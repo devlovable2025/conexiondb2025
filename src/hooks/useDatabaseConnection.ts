@@ -24,7 +24,7 @@ export function useDatabaseConnection() {
         setIsLoading(false);
         setConnectionStatus({
           success: false,
-          message: 'Error de red: No se puede conectar al servidor. Asegúrese de que el servidor esté en ejecución en http://localhost:3002'
+          message: 'Error de red: No se puede conectar al servidor. Asegúrese de que el servidor esté en ejecución en http://localhost:8000'
         });
         toast({
           title: "Error de conexión",

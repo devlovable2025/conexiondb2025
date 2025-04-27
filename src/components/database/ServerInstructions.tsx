@@ -76,7 +76,7 @@ export function ServerInstructions() {
                 <AlertTitle>Información de puertos</AlertTitle>
                 <AlertDescription>
                   <div className="mt-2">
-                    <div>Servidor Frontend (Vite): <span className="font-mono">http://localhost:8080</span></div>
+                    <div>Servidor Frontend (Vite): <span className="font-mono">http://localhost:5173</span></div>
                     <div>Servidor Backend (Express): <span className="font-mono">http://localhost:3002</span></div>
                   </div>
                 </AlertDescription>
