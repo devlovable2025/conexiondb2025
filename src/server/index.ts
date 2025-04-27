@@ -45,7 +45,7 @@ app.post('/api/database/test', async (req, res) => {
     
     // Configuración de las opciones SQL Server con valores por defecto más seguros
     const options: any = {
-      encrypt: config.encrypt ?? false,
+      encrypt: config.encrypt ?? true,
       trustServerCertificate: config.trustServerCertificate ?? true,
       connectTimeout: 30000, // Aumentamos el timeout de conexión
       requestTimeout: 30000   // Aumentamos el timeout de solicitudes
