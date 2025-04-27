@@ -7,7 +7,7 @@ class ApiService {
 
   constructor() {
     this.api = axios.create({
-      baseURL: '/api', // Esto se configurará con la URL de tu servidor NestJS
+      baseURL: 'http://tu-servidor-vps.com:3000', // Actualizar con la URL real de tu servidor NestJS
       headers: {
         'Content-Type': 'application/json',
       },
