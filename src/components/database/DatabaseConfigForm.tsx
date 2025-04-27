@@ -18,7 +18,7 @@ export function DatabaseConfigForm() {
     database: 'Presupuesto',
     username: 'sa',
     password: 'X3c1970213@mam@',
-    trustServerCertificate: true,
+    trustServerCertificate: false, // Cambiado a false como solicitaste
     encrypt: false
   });
 
