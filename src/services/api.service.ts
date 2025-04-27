@@ -15,9 +15,9 @@ class ApiService {
     });
   }
 
-  async testDatabaseConnection(config: DatabaseConfig): Promise<ApiResponse<boolean>> {
+  async testDatabaseConnection(config: DatabaseConfig): Promise<ApiResponse<any>> {
     try {
-      const response = await this.api.post<ApiResponse<boolean>>('/api/database/test', config);
+      const response = await this.api.post<ApiResponse<any>>('/api/database/test', config);
       return response.data;
     } catch (error) {
       console.error('Error al probar la conexión de base de datos:', error);
@@ -35,4 +35,3 @@ class ApiService {
 }
 
 export const apiService = new ApiService();
-
