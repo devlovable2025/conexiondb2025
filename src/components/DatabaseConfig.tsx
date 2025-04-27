@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -21,27 +20,25 @@ import { apiService } from '../services/api.service';
 import type { DatabaseConfig, DatabaseType } from '../types/api.types';
 
 export function DatabaseConfigForm() {
-  // Configuración inicial con los valores correctos
   const [config, setConfig] = useState<DatabaseConfig>({
     type: 'sqlserver',
     host: '205.209.122.84',
-    port: 1437, // Puerto correcto: 1437
-    database: 'Presupuesto', // Base de datos específica
+    port: 1437,
+    database: 'Presupuesto',
     username: 'sa',
     password: 'X3c1970213@mam@',
     trustServerCertificate: true,
     encrypt: false,
-    instanceName: ''
+    instanceName: 'mobilsoft'
   });
 
   const [databases, setDatabases] = useState<{ value: string; label: string; }[]>([]);
   const [isConnectionTested, setIsConnectionTested] = useState(false);
 
-  // Actualizar el puerto según el tipo de base de datos
   useEffect(() => {
     setConfig(prev => ({
       ...prev,
-      port: prev.type === 'postgresql' ? 5432 : 1437 // Aseguramos que el puerto por defecto para SQL Server sea 1437
+      port: prev.type === 'postgresql' ? 5432 : 1437
     }));
   }, [config.type]);
 
@@ -51,7 +48,6 @@ export function DatabaseConfigForm() {
       const response = await apiService.testDatabaseConnection(config);
       if (response.success) {
         setIsConnectionTested(true);
-        // Lista actualizada con Presupuesto como primera opción
         const mockDatabases = [
           { value: 'Presupuesto', label: 'Presupuesto' },
           { value: 'db2', label: 'Base de datos 2' },
@@ -142,12 +138,13 @@ export function DatabaseConfigForm() {
 
               {config.type === 'sqlserver' && (
                 <div className="space-y-2">
-                  <Label htmlFor="instanceName" className="font-bold">Nombre de Instancia (opcional)</Label>
+                  <Label htmlFor="instanceName" className="font-bold">Nombre de Instancia</Label>
                   <Input
                     id="instanceName"
                     value={config.instanceName}
                     onChange={(e) => setConfig({ ...config, instanceName: e.target.value })}
-                    placeholder="SQLEXPRESS"
+                    placeholder="MOBILSOFT"
+                    required
                   />
                 </div>
               )}
