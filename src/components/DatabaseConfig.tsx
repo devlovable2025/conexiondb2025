@@ -20,16 +20,7 @@ import { toast } from '@/hooks/use-toast';
 import { apiService } from '../services/api.service';
 import type { DatabaseConfig, DatabaseType } from '../types/api.types';
 import { Alert, AlertTitle, AlertDescription } from './ui/alert';
-import { InfoIcon, AlertCircleIcon, DatabaseIcon, Terminal } from 'lucide-react';
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
-import { TerminalSimulator } from './TerminalSimulator';
+import { InfoIcon, AlertCircleIcon, DatabaseIcon } from 'lucide-react';
 
 export function DatabaseConfigForm() {
   const [config, setConfig] = useState<DatabaseConfig>({
@@ -65,7 +56,7 @@ export function DatabaseConfigForm() {
     const checkServerStatus = async () => {
       try {
         setShowServerStatus(true);
-        const response = await fetch('http://localhost:3000/api/health');
+        const response = await fetch('http://localhost:8000/api/health');
         if (response.ok) {
           setServerActive(true);
         } else {

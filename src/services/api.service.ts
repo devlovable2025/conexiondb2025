@@ -17,7 +17,7 @@ class ApiService {
 
   async testDatabaseConnection(config: DatabaseConfig): Promise<ApiResponse<any>> {
     try {
-      console.log('Enviando solicitud de conexión a:', 'http://localhost:3000/api/database/test');
+      console.log('Enviando solicitud de conexión a:', 'http://localhost:8000/api/database/test');
       console.log('Configuración:', JSON.stringify(config, null, 2));
       
       const response = await this.api.post<ApiResponse<any>>('/api/database/test', config);
@@ -49,4 +49,3 @@ class ApiService {
 }
 
 export const apiService = new ApiService();
-
