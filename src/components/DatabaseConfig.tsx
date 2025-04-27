@@ -74,8 +74,8 @@ export function DatabaseConfigForm() {
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-200px)] px-4">
       <Card className="w-full max-w-3xl mx-auto shadow-lg font-sans">
-        <CardHeader className="text-center">
-          <CardTitle className="font-bold text-2xl">Mobilsoft - Gestor de Conexiones</CardTitle>
+        <CardHeader className="text-center mb-4">
+          <CardTitle className="font-bold text-2xl mt-2">Mobilsoft - Gestor de Conexiones</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
