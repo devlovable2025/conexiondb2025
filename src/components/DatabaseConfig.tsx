@@ -71,124 +71,122 @@ export function DatabaseConfigForm() {
   ];
 
   return (
-    <div className="flex justify-center items-center min-h-[calc(100vh-200px)]">
-      <Card className="w-full max-w-3xl shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-center">Configuración de Base de Datos</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="dbType">Tipo de Base de Datos</Label>
-                <Select
-                  value={config.type}
-                  onValueChange={(value: DatabaseType) => 
-                    setConfig({ 
-                      ...config, 
-                      type: value,
-                      ...(value === 'postgresql' && {
-                        trustServerCertificate: undefined,
-                        encrypt: undefined,
-                        instanceName: '',
-                      })
+    <Card className="w-full max-w-3xl shadow-lg font-sans">
+      <CardHeader>
+        <CardTitle className="text-center font-normal">Configuración de Base de Datos</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="dbType" className="font-normal">Tipo de Base de Datos</Label>
+              <Select
+                value={config.type}
+                onValueChange={(value: DatabaseType) => 
+                  setConfig({ 
+                    ...config, 
+                    type: value,
+                    ...(value === 'postgresql' && {
+                      trustServerCertificate: undefined,
+                      encrypt: undefined,
+                      instanceName: '',
                     })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona el tipo de base de datos" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="sqlserver">SQL Server</SelectItem>
-                    <SelectItem value="postgresql">PostgreSQL</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="host">Host</Label>
-                <Input
-                  id="host"
-                  value={config.host}
-                  onChange={(e) => setConfig({ ...config, host: e.target.value })}
-                  placeholder="localhost"
-                  required
-                />
-              </div>
-
-              {config.type === 'sqlserver' && (
-                <div className="space-y-2">
-                  <Label htmlFor="instanceName">Nombre de Instancia (opcional)</Label>
-                  <Input
-                    id="instanceName"
-                    value={config.instanceName}
-                    onChange={(e) => setConfig({ ...config, instanceName: e.target.value })}
-                    placeholder="SQLEXPRESS"
-                  />
-                </div>
-              )}
-
-              <div className="space-y-2">
-                <Label htmlFor="port">Puerto</Label>
-                <Input
-                  id="port"
-                  type="number"
-                  value={config.port}
-                  onChange={(e) => setConfig({ ...config, port: Number(e.target.value) })}
-                  placeholder={config.type === 'postgresql' ? "5432" : "1433"}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="database">Base de datos</Label>
-                <Select
-                  value={config.database}
-                  onValueChange={(value: string) => setConfig({ ...config, database: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona la base de datos" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {databases.map((db) => (
-                      <SelectItem key={db.value} value={db.value}>
-                        {db.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="username">Usuario</Label>
-                <Input
-                  id="username"
-                  value={config.username}
-                  onChange={(e) => setConfig({ ...config, username: e.target.value })}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Contraseña</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={config.password}
-                  onChange={(e) => setConfig({ ...config, password: e.target.value })}
-                  required
-                />
-              </div>
-
-              <div className="col-span-2">
-                <Button type="submit" className="w-full mt-4">
-                  Probar Conexión
-                </Button>
-              </div>
+                  })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecciona el tipo de base de datos" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="sqlserver">SQL Server</SelectItem>
+                  <SelectItem value="postgresql">PostgreSQL</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="host" className="font-normal">Host</Label>
+              <Input
+                id="host"
+                value={config.host}
+                onChange={(e) => setConfig({ ...config, host: e.target.value })}
+                placeholder="localhost"
+                required
+              />
+            </div>
+
+            {config.type === 'sqlserver' && (
+              <div className="space-y-2">
+                <Label htmlFor="instanceName" className="font-normal">Nombre de Instancia (opcional)</Label>
+                <Input
+                  id="instanceName"
+                  value={config.instanceName}
+                  onChange={(e) => setConfig({ ...config, instanceName: e.target.value })}
+                  placeholder="SQLEXPRESS"
+                />
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="port" className="font-normal">Puerto</Label>
+              <Input
+                id="port"
+                type="number"
+                value={config.port}
+                onChange={(e) => setConfig({ ...config, port: Number(e.target.value) })}
+                placeholder={config.type === 'postgresql' ? "5432" : "1433"}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="database" className="font-normal">Base de datos</Label>
+              <Select
+                value={config.database}
+                onValueChange={(value: string) => setConfig({ ...config, database: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecciona la base de datos" />
+                </SelectTrigger>
+                <SelectContent>
+                  {databases.map((db) => (
+                    <SelectItem key={db.value} value={db.value}>
+                      {db.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="username" className="font-normal">Usuario</Label>
+              <Input
+                id="username"
+                value={config.username}
+                onChange={(e) => setConfig({ ...config, username: e.target.value })}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password" className="font-normal">Contraseña</Label>
+              <Input
+                id="password"
+                type="password"
+                value={config.password}
+                onChange={(e) => setConfig({ ...config, password: e.target.value })}
+                required
+              />
+            </div>
+
+            <div className="col-span-2">
+              <Button type="submit" className="w-full mt-4 font-normal">
+                Probar Conexión
+              </Button>
+            </div>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
