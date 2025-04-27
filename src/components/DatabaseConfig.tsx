@@ -21,11 +21,12 @@ import { apiService } from '../services/api.service';
 import type { DatabaseConfig, DatabaseType } from '../types/api.types';
 
 export function DatabaseConfigForm() {
+  // Configuración inicial con los valores correctos
   const [config, setConfig] = useState<DatabaseConfig>({
     type: 'sqlserver',
     host: '205.209.122.84',
-    port: 1437, // Corrected port number
-    database: 'Presupuesto', // Added the specific database name
+    port: 1437, // Puerto correcto: 1437
+    database: 'Presupuesto', // Base de datos específica
     username: 'sa',
     password: 'X3c1970213@mam@',
     trustServerCertificate: true,
@@ -36,10 +37,11 @@ export function DatabaseConfigForm() {
   const [databases, setDatabases] = useState<{ value: string; label: string; }[]>([]);
   const [isConnectionTested, setIsConnectionTested] = useState(false);
 
+  // Actualizar el puerto según el tipo de base de datos
   useEffect(() => {
     setConfig(prev => ({
       ...prev,
-      port: prev.type === 'postgresql' ? 5432 : 1433
+      port: prev.type === 'postgresql' ? 5432 : 1437 // Aseguramos que el puerto por defecto para SQL Server sea 1437
     }));
   }, [config.type]);
 
@@ -49,6 +51,7 @@ export function DatabaseConfigForm() {
       const response = await apiService.testDatabaseConnection(config);
       if (response.success) {
         setIsConnectionTested(true);
+        // Lista actualizada con Presupuesto como primera opción
         const mockDatabases = [
           { value: 'Presupuesto', label: 'Presupuesto' },
           { value: 'db2', label: 'Base de datos 2' },
