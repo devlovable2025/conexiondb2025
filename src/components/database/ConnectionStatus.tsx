@@ -46,6 +46,7 @@ export function ConnectionStatus({
               <p>El servidor backend no está en ejecución. Por favor, inicie el servidor con:</p>
               <pre className="bg-gray-100 p-2 rounded mt-2 text-sm overflow-auto">node src/server/index.js</pre>
               <p className="mt-2">Asegúrese de ejecutar este comando en una terminal separada.</p>
+              <p className="mt-2">El servidor debe estar ejecutándose en el puerto 3002.</p>
               {serverCheckError && (
                 <div className="mt-2 text-sm font-medium">
                   Información adicional: {serverCheckError}
