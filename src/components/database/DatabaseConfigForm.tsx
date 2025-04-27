@@ -19,16 +19,13 @@ export function DatabaseConfigForm() {
     instanceName: 'mobilsoft'
   });
 
-  const [databases, setDatabases] = useState<{ value: string; label: string; }[]>([]);
-  const [isConnectionTested, setIsConnectionTested] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [showServerStatus, setShowServerStatus] = useState(false);
+  const [serverActive, setServerActive] = useState(false);
+  const [serverCheckError, setServerCheckError] = useState<string | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<{
     success: boolean;
     message: string;
   } | null>(null);
-  const [showServerStatus, setShowServerStatus] = useState(false);
-  const [serverActive, setServerActive] = useState(false);
-  const [serverCheckError, setServerCheckError] = useState<string | null>(null);
 
   useEffect(() => {
     setConfig(prev => ({
@@ -85,20 +82,13 @@ export function DatabaseConfigForm() {
           connectionStatus={connectionStatus} 
           serverActive={serverActive} 
           showServerStatus={showServerStatus} 
-          isConnectionTested={isConnectionTested}
+          isConnectionTested={false}
           serverCheckError={serverCheckError}
         />
         
         <DatabaseConnectionForm
           config={config}
           setConfig={setConfig}
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
-          databases={databases}
-          setDatabases={setDatabases}
-          isConnectionTested={isConnectionTested}
-          setIsConnectionTested={setIsConnectionTested}
-          setConnectionStatus={setConnectionStatus}
           serverActive={serverActive}
         />
         
