@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -71,10 +72,10 @@ export function DatabaseConfigForm() {
   ];
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
+    <div className="flex items-center justify-center min-h-[calc(100vh-200px)] px-4">
       <Card className="w-full max-w-3xl mx-auto shadow-lg font-sans">
-        <CardHeader>
-          <CardTitle className="text-center font-bold">Configuración de Base de Datos</CardTitle>
+        <CardHeader className="text-center">
+          <CardTitle className="font-bold text-2xl">Mobilsoft - Gestor de Conexiones</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
