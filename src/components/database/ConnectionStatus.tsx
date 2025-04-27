@@ -18,13 +18,13 @@ export function ConnectionStatus({
   isConnectionTested,
   serverCheckError
 }: ConnectionStatusProps) {
-  if (!connectionStatus && !showServerStatus && isConnectionTested) return null;
+  if (!connectionStatus && !showServerStatus && !isConnectionTested) return null;
 
   return (
-    <div className="px-6">
+    <div className="px-6 mb-6">
       {connectionStatus && (
         <Alert 
-          className={`mb-6 ${connectionStatus.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}
+          className={`mb-4 ${connectionStatus.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}
           variant={connectionStatus.success ? "default" : "destructive"}
         >
           <AlertTitle className={connectionStatus.success ? "text-green-800" : "text-red-800"}>
@@ -37,7 +37,7 @@ export function ConnectionStatus({
       )}
 
       {!serverActive && showServerStatus && (
-        <Alert variant="destructive" className="mb-6">
+        <Alert variant="destructive" className="mb-4">
           <AlertCircleIcon className="h-4 w-4 mr-2" />
           <AlertTitle>Servidor no detectado</AlertTitle>
           <AlertDescription>
@@ -54,7 +54,7 @@ export function ConnectionStatus({
       )}
 
       {!isConnectionTested && serverActive && (
-        <Alert variant="default" className="mb-6 bg-blue-50 border-blue-200">
+        <Alert variant="default" className="mb-4 bg-blue-50 border-blue-200">
           <InfoIcon className="h-4 w-4 mr-2 text-blue-800" />
           <AlertTitle className="text-blue-800">Información</AlertTitle>
           <AlertDescription className="text-blue-700">

@@ -79,7 +79,7 @@ export function DatabaseConnectionForm({
           )}
         </div>
 
-        {!isConnectionTested && (
+        {!isConnectionTested ? (
           <div className="flex justify-end mt-4">
             <Button 
               type="button" 
@@ -87,6 +87,15 @@ export function DatabaseConnectionForm({
               disabled={!serverActive || isLoading}
             >
               {isLoading ? 'Probando...' : 'Probar Conexión'}
+            </Button>
+          </div>
+        ) : (
+          <div className="flex justify-end mt-4">
+            <Button 
+              type="submit"
+              disabled={!config.database}
+            >
+              Guardar Configuración
             </Button>
           </div>
         )}

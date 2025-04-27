@@ -24,7 +24,7 @@ export function DatabaseConfigForm() {
   const [serverActive, setServerActive] = useState(false);
   const [serverCheckError, setServerCheckError] = useState<string | null>(null);
   
-  // Use the connection hook to access connection status
+  // Use the connection hook to get connection status
   const { connectionStatus, isConnectionTested } = useDatabaseConnection();
 
   useEffect(() => {
@@ -40,7 +40,6 @@ export function DatabaseConfigForm() {
         setShowServerStatus(true);
         console.log('Verificando estado del servidor en:', 'http://localhost:8000/api/health');
         const response = await fetch('http://localhost:8000/api/health', { 
-          // Agregamos un timeout para que no se quede esperando mucho tiempo
           signal: AbortSignal.timeout(3000)
         });
         
