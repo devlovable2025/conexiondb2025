@@ -1,5 +1,5 @@
 
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosError } from 'axios';
 import { DatabaseConfig, ApiResponse } from '../types/api.types';
 
 class ApiService {
@@ -17,14 +17,28 @@ class ApiService {
 
   async testDatabaseConnection(config: DatabaseConfig): Promise<ApiResponse<any>> {
     try {
+      console.log('Enviando solicitud de conexión a:', 'http://localhost:3000/api/database/test');
+      console.log('Configuración:', JSON.stringify(config, null, 2));
+      
       const response = await this.api.post<ApiResponse<any>>('/api/database/test', config);
+      console.log('Respuesta recibida:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Error al probar la conexión de base de datos:', error);
+      const axiosError = error as AxiosError;
+      console.error('Error completo:', axiosError);
       
-      const errorMessage = error instanceof Error 
-        ? `Error de red: ${error.message}`
-        : 'Error de conexión: No se pudo conectar al servidor API';
+      let errorMessage = 'Error de conexión desconocido';
+      
+      if (axiosError.code === 'ERR_NETWORK') {
+        errorMessage = 'Error de red: No se puede conectar al servidor. Asegúrese de que el servidor esté en ejecución.';
+      } else if (axiosError.code === 'ECONNREFUSED') {
+        errorMessage = 'Conexión rechazada: El servidor no está disponible en este momento.';
+      } else if (axiosError.response) {
+        // El servidor respondió con un código de estado diferente de 2xx
+        errorMessage = `Error ${axiosError.response.status}: ${JSON.stringify(axiosError.response.data)}`;
+      } else if (axiosError.message) {
+        errorMessage = `Error de red: ${axiosError.message}`;
+      }
       
       return {
         success: false,

@@ -14,12 +14,14 @@ import {
   Card, 
   CardContent, 
   CardHeader, 
-  CardTitle 
+  CardTitle, 
+  CardDescription 
 } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
 import { apiService } from '../services/api.service';
 import type { DatabaseConfig, DatabaseType } from '../types/api.types';
 import { Alert, AlertTitle, AlertDescription } from './ui/alert';
+import { InfoIcon, AlertCircleIcon, DatabaseIcon } from 'lucide-react';
 
 export function DatabaseConfigForm() {
   const [config, setConfig] = useState<DatabaseConfig>({
@@ -41,6 +43,8 @@ export function DatabaseConfigForm() {
     success: boolean;
     message: string;
   } | null>(null);
+  const [showServerStatus, setShowServerStatus] = useState(false);
+  const [serverActive, setServerActive] = useState(false);
 
   useEffect(() => {
     setConfig(prev => ({
@@ -48,6 +52,29 @@ export function DatabaseConfigForm() {
       port: prev.type === 'postgresql' ? 5432 : 1437
     }));
   }, [config.type]);
+
+  // Verificar si el servidor está activo
+  useEffect(() => {
+    const checkServerStatus = async () => {
+      try {
+        setShowServerStatus(true);
+        const response = await fetch('http://localhost:3000/api/health');
+        if (response.ok) {
+          setServerActive(true);
+        } else {
+          setServerActive(false);
+        }
+      } catch (error) {
+        console.error('Error al verificar el estado del servidor:', error);
+        setServerActive(false);
+      }
+    };
+
+    checkServerStatus();
+    // Verificar cada 10 segundos
+    const interval = setInterval(checkServerStatus, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleTestConnection = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,12 +87,7 @@ export function DatabaseConfigForm() {
       
       if (response.success) {
         setIsConnectionTested(true);
-        const mockDatabases = [
-          { value: 'Presupuesto', label: 'Presupuesto' },
-          { value: 'db2', label: 'Base de datos 2' },
-          { value: 'db3', label: 'Base de datos 3' },
-        ];
-        setDatabases(mockDatabases);
+        setDatabases(response.data || []);
         setConnectionStatus({
           success: true,
           message: response.message || 'Conexión establecida correctamente'
@@ -120,6 +142,12 @@ export function DatabaseConfigForm() {
       <Card className="w-full max-w-3xl mx-auto shadow-lg font-sans">
         <CardHeader className="text-center mb-4">
           <CardTitle className="font-bold text-2xl mt-2">Mobilsoft - Gestor de Conexiones</CardTitle>
+          {showServerStatus && (
+            <CardDescription className={`mt-2 flex items-center justify-center ${serverActive ? 'text-green-600' : 'text-red-600'}`}>
+              <div className={`w-3 h-3 rounded-full mr-2 ${serverActive ? 'bg-green-600' : 'bg-red-600'}`}></div>
+              {serverActive ? 'Servidor activo' : 'Servidor inactivo - Ejecute "node src/server/index.js"'}
+            </CardDescription>
+          )}
         </CardHeader>
         <CardContent>
           {connectionStatus && (
@@ -132,6 +160,28 @@ export function DatabaseConfigForm() {
               </AlertTitle>
               <AlertDescription className={connectionStatus.success ? "text-green-700" : "text-red-700"}>
                 {connectionStatus.message}
+              </AlertDescription>
+            </Alert>
+          )}
+          
+          {!serverActive && showServerStatus && (
+            <Alert variant="destructive" className="mb-6">
+              <AlertCircleIcon className="h-4 w-4 mr-2" />
+              <AlertTitle>Servidor no detectado</AlertTitle>
+              <AlertDescription>
+                <p>El servidor backend no está en ejecución. Por favor, inicie el servidor con:</p>
+                <pre className="bg-gray-100 p-2 rounded mt-2 text-sm overflow-auto">node src/server/index.js</pre>
+                <p className="mt-2">Asegúrese de ejecutar este comando en una terminal separada.</p>
+              </AlertDescription>
+            </Alert>
+          )}
+          
+          {!isConnectionTested && serverActive && (
+            <Alert variant="default" className="mb-6 bg-blue-50 border-blue-200">
+              <InfoIcon className="h-4 w-4 mr-2 text-blue-800" />
+              <AlertTitle className="text-blue-800">Información</AlertTitle>
+              <AlertDescription className="text-blue-700">
+                Complete los datos de conexión y presione "Probar Conexión" para continuar.
               </AlertDescription>
             </Alert>
           )}
@@ -183,7 +233,6 @@ export function DatabaseConfigForm() {
                     value={config.instanceName}
                     onChange={(e) => setConfig({ ...config, instanceName: e.target.value })}
                     placeholder="MOBILSOFT"
-                    required
                   />
                 </div>
               )}
@@ -246,7 +295,7 @@ export function DatabaseConfigForm() {
                 <Button 
                   type="submit" 
                   className="w-full mt-4 font-bold"
-                  disabled={isLoading}
+                  disabled={isLoading || (!serverActive && !isConnectionTested)}
                 >
                   {isLoading ? 'Conectando...' : (!isConnectionTested ? 'Probar Conexión' : 'Guardar Configuración')}
                 </Button>
