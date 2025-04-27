@@ -1,9 +1,9 @@
-
 import React from 'react';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { CardContent } from '../ui/card';
+import { Button } from '../ui/button';
 import { toast } from '@/hooks/use-toast';
 import { apiService } from '../../services/api.service';
 import type { DatabaseConfig, DatabaseType } from '../../types/api.types';
@@ -14,7 +14,7 @@ interface DatabaseConnectionFormProps {
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   databases: Array<{ value: string; label: string; }>;
-  setDatabases: React.Dispatch<React.SetStateAction<Array<{ value: string; label: string; }>>>;
+  setDatabases: React.Dispatch<React.SetStateAction<Array<{ value: string; label: string; }>>;
   isConnectionTested: boolean;
   setIsConnectionTested: React.Dispatch<React.SetStateAction<boolean>>;
   setConnectionStatus: React.Dispatch<React.SetStateAction<{ success: boolean; message: string; } | null>>;
@@ -201,6 +201,18 @@ export function DatabaseConnectionForm({
             </div>
           )}
         </div>
+
+        {!isConnectionTested && (
+          <div className="flex justify-end mt-4">
+            <Button 
+              type="button" 
+              onClick={handleTestConnection} 
+              disabled={!serverActive || isLoading}
+            >
+              {isLoading ? 'Probando...' : 'Probar Conexión'}
+            </Button>
+          </div>
+        )}
       </form>
     </CardContent>
   );
