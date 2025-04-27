@@ -23,14 +23,14 @@ import type { DatabaseConfig, DatabaseType } from '../types/api.types';
 export function DatabaseConfigForm() {
   const [config, setConfig] = useState<DatabaseConfig>({
     type: 'sqlserver',
-    host: '',
+    host: 'localhost', // Valores predeterminados de desarrollo
     port: 1433,
-    database: '',
-    username: '',
-    password: '',
+    database: '', // Dejamos la base de datos vacía para que el usuario la seleccione
+    username: 'sa', // Credencial típica de prueba para SQL Server
+    password: 'Mobilsoft2024!', // Contraseña de prueba
     trustServerCertificate: true,
     encrypt: false,
-    instanceName: ''
+    instanceName: 'SQLEXPRESS' // Instancia predeterminada, pero opcional
   });
 
   const [databases, setDatabases] = useState<{ value: string; label: string; }[]>([]);
