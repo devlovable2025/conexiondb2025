@@ -27,7 +27,7 @@ export function DatabaseConfigForm() {
   const [serverCheckError, setServerCheckError] = useState<string | null>(null);
   const [checkingServer, setCheckingServer] = useState(false);
   
-  const { connectionStatus, isConnectionTested } = useDatabaseConnection();
+  const { connectionStatus, isConnectionTested, errorDetails } = useDatabaseConnection();
 
   useEffect(() => {
     setConfig(prev => ({
@@ -120,6 +120,7 @@ export function DatabaseConfigForm() {
           showServerStatus={showServerStatus} 
           isConnectionTested={isConnectionTested}
           serverCheckError={serverCheckError}
+          errorDetails={errorDetails}
         />
         
         <DatabaseConnectionForm

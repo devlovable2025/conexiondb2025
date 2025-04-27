@@ -1,14 +1,21 @@
 
 import React from 'react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { InfoIcon, AlertCircle as AlertCircleIcon } from 'lucide-react';
+import { InfoIcon, AlertCircle as AlertCircleIcon, HelpCircle } from 'lucide-react';
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface ConnectionStatusProps {
-  connectionStatus: { success: boolean; message: string; } | null;
+  connectionStatus: { success: boolean; message: string; details?: any } | null;
   serverActive: boolean;
   showServerStatus: boolean;
   isConnectionTested: boolean;
   serverCheckError?: string | null;
+  errorDetails?: any;
 }
 
 export function ConnectionStatus({ 
@@ -16,10 +23,47 @@ export function ConnectionStatus({
   serverActive, 
   showServerStatus, 
   isConnectionTested,
-  serverCheckError
+  serverCheckError,
+  errorDetails
 }: ConnectionStatusProps) {
   // Solo mostramos si hay alguna información relevante para mostrar
   if (!connectionStatus && !showServerStatus && !isConnectionTested) return null;
+
+  // Función para renderizar detalles de error técnico
+  const renderErrorDetails = () => {
+    if (!errorDetails) return null;
+    
+    return (
+      <div className="mt-2">
+        <div className="flex items-center">
+          <h6 className="text-xs font-semibold">Información técnica:</h6>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button className="ml-1">
+                  <HelpCircle className="h-3 w-3 text-gray-400" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="text-xs">Información técnica del error para ayudar a diagnosticar problemas</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+        
+        <div className="mt-1 p-2 rounded bg-gray-50 dark:bg-gray-900 text-xs font-mono overflow-x-auto">
+          {errorDetails.code && <p>Código: {errorDetails.code}</p>}
+          {errorDetails.number && <p>Número: {errorDetails.number}</p>}
+          {errorDetails.state && <p>Estado: {errorDetails.state}</p>}
+          {errorDetails.originalMessage && (
+            <p className="mt-1 border-t border-gray-200 dark:border-gray-700 pt-1">
+              Mensaje original: {errorDetails.originalMessage}
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="px-6 mb-6">
@@ -33,6 +77,7 @@ export function ConnectionStatus({
           </AlertTitle>
           <AlertDescription className={connectionStatus.success ? "text-green-700" : "text-red-700"}>
             {connectionStatus.message}
+            {!connectionStatus.success && renderErrorDetails()}
           </AlertDescription>
         </Alert>
       )}

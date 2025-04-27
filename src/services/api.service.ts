@@ -1,3 +1,4 @@
+
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { DatabaseConfig, ApiResponse } from '../types/api.types';
 
@@ -34,6 +35,7 @@ class ApiService {
       console.error('Error completo:', axiosError);
       
       let errorMessage = 'Error de conexión desconocido';
+      let errorDetails = null;
       
       if (axiosError.code === 'ERR_NETWORK') {
         errorMessage = 'Error de red: No se puede conectar al servidor. Asegúrese de que el servidor esté en ejecución en http://localhost:3002';
@@ -41,7 +43,13 @@ class ApiService {
         errorMessage = 'Conexión rechazada: El servidor no está disponible en este momento.';
       } else if (axiosError.response) {
         // El servidor respondió con un código de estado diferente de 2xx
-        errorMessage = `Error ${axiosError.response.status}: ${JSON.stringify(axiosError.response.data)}`;
+        const responseData = axiosError.response.data as any;
+        errorMessage = responseData.error || `Error ${axiosError.response.status}: ${JSON.stringify(responseData)}`;
+        
+        // Capturar detalles del error si existen
+        if (responseData.errorDetails) {
+          errorDetails = responseData.errorDetails;
+        }
       } else if (axiosError.message) {
         errorMessage = `Error de red: ${axiosError.message}`;
       }
@@ -49,6 +57,11 @@ class ApiService {
       return {
         success: false,
         error: errorMessage,
+        errorDetails: errorDetails || {
+          type: axiosError.name,
+          code: axiosError.code,
+          message: axiosError.message
+        }
       };
     }
   }

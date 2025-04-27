@@ -9,8 +9,8 @@ const app = express();
 // Configuración de CORS para producción y desarrollo
 const allowedOrigins = [
   'https://preview--conexiondb2025.lovable.app',
-  //'http://localhost:8080',
-  //'http://127.0.0.1:8080'
+  'http://localhost:8080',
+  'http://127.0.0.1:8080'
 ];
 
 app.use(cors({
@@ -65,33 +65,74 @@ app.post('/api/database/test', async (req, res) => {
       password: '******' // Ocultamos la contraseña en los logs
     }, null, 2));
 
-    const pool = await sql.connect(sqlConfig);
-    console.log('Conexión exitosa');
-    
-    const result = await pool.request().query(`
-      SELECT name 
-      FROM sys.databases 
-      WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')
-      ORDER BY name
-    `);
+    try {
+      const pool = await sql.connect(sqlConfig);
+      console.log('Conexión exitosa');
+      
+      const result = await pool.request().query(`
+        SELECT name 
+        FROM sys.databases 
+        WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')
+        ORDER BY name
+      `);
 
-    await pool.close();
-    console.log('Bases de datos encontradas:', result.recordset);
+      await pool.close();
+      console.log('Bases de datos encontradas:', result.recordset);
 
-    return res.json({
-      success: true,
-      message: 'Conexión exitosa',
-      data: result.recordset.map(db => ({
-        value: db.name,
-        label: db.name
-      }))
-    });
+      return res.json({
+        success: true,
+        message: 'Conexión exitosa',
+        data: result.recordset.map(db => ({
+          value: db.name,
+          label: db.name
+        }))
+      });
+    } catch (sqlError: any) {
+      // Capturar errores específicos de SQL Server
+      console.error('Error SQL detallado:', sqlError);
+      
+      // Extraer información útil del error
+      const errorCode = sqlError.code || 'UNKNOWN';
+      const errorNumber = sqlError.number || 'UNKNOWN';
+      const errorState = sqlError.state || 'UNKNOWN';
+      const errorMessage = sqlError.message || 'Error desconocido de SQL Server';
+      
+      let errorDescription = `Error SQL (${errorCode}): ${errorMessage}`;
+      
+      // Mensajes de error más amigables para errores comunes
+      if (errorCode === 'ETIMEOUT') {
+        errorDescription = 'Tiempo de espera agotado al intentar conectar al servidor. Verifique que el servidor esté activo y accesible.';
+      } else if (errorCode === 'ELOGIN') {
+        errorDescription = 'Error de autenticación: Nombre de usuario o contraseña incorrectos.';
+      } else if (errorNumber === 4060) {
+        errorDescription = 'No se puede abrir la base de datos solicitada. Verifique el nombre de la base de datos.';
+      } else if (errorNumber === 18456) {
+        errorDescription = 'Error de login: Usuario o contraseña incorrectos.';
+      } else if (errorCode === 'ESOCKET') {
+        errorDescription = 'Error de conexión: No se puede establecer una conexión con el servidor. Verifique que la dirección IP y el puerto sean correctos.';
+      }
+
+      return res.status(400).json({
+        success: false,
+        error: errorDescription,
+        errorDetails: {
+          code: errorCode,
+          number: errorNumber,
+          state: errorState,
+          originalMessage: errorMessage
+        }
+      });
+    }
 
   } catch (error) {
     console.error('Error al conectar:', error);
     return res.status(500).json({
       success: false,
-      error: error instanceof Error ? error.message : 'Error desconocido al conectar'
+      error: error instanceof Error ? error.message : 'Error desconocido al conectar',
+      errorDetails: { 
+        type: error instanceof Error ? error.name : 'Unknown',
+        stack: error instanceof Error ? error.stack : null
+      }
     });
   }
 });

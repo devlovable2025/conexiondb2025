@@ -7,13 +7,15 @@ import type { DatabaseConfig } from '../types/api.types';
 export function useDatabaseConnection() {
   const [isLoading, setIsLoading] = useState(false);
   const [isConnectionTested, setIsConnectionTested] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState<{ success: boolean; message: string; } | null>(null);
+  const [connectionStatus, setConnectionStatus] = useState<{ success: boolean; message: string; details?: any } | null>(null);
   const [databases, setDatabases] = useState<Array<{ value: string; label: string; }>>([]);
+  const [errorDetails, setErrorDetails] = useState<any>(null);
 
   const testConnection = async (config: DatabaseConfig) => {
     // Reset previous state
     setIsLoading(true);
     setConnectionStatus(null);
+    setErrorDetails(null);
     
     try {
       console.log("Iniciando prueba de conexión con config:", config);
@@ -51,10 +53,17 @@ export function useDatabaseConnection() {
           description: response.message || "Conexión establecida correctamente",
         });
       } else {
+        // Almacenar detalles del error si existen
+        if (response.errorDetails) {
+          setErrorDetails(response.errorDetails);
+        }
+        
         setConnectionStatus({
           success: false,
-          message: response.error || "No se pudo establecer la conexión"
+          message: response.error || "No se pudo establecer la conexión",
+          details: response.errorDetails
         });
+        
         toast({
           title: "Error de conexión",
           description: response.error || "No se pudo establecer la conexión",
@@ -80,6 +89,7 @@ export function useDatabaseConnection() {
     setIsConnectionTested(false);
     setConnectionStatus(null);
     setDatabases([]);
+    setErrorDetails(null);
   };
 
   return {
@@ -87,6 +97,7 @@ export function useDatabaseConnection() {
     isConnectionTested,
     connectionStatus,
     databases,
+    errorDetails,
     testConnection,
     setIsConnectionTested,
     resetConnection
