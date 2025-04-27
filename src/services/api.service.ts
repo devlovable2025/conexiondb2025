@@ -1,4 +1,3 @@
-
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { DatabaseConfig, ApiResponse } from '../types/api.types';
 
@@ -8,8 +7,8 @@ class ApiService {
   constructor() {
     // Use a consistent API URL that works in any environment
     const apiUrl = process.env.NODE_ENV === 'production' 
-      ? window.location.origin.replace(/:\d+$/, ':8000') // Replace port with 8000 in production
-      : 'http://localhost:8000'; // Default to localhost:8000 in development
+      ? window.location.origin.replace(/:\d+$/, ':3002') // Cambiado de 8000 a 3002
+      : 'http://localhost:3002'; // Cambiado de 8000 a 3002
     
     this.api = axios.create({
       baseURL: apiUrl,
