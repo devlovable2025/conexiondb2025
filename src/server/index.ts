@@ -9,8 +9,8 @@ const app = express();
 // Configuración de CORS para producción y desarrollo
 const allowedOrigins = [
   'https://preview--conexiondb2025.lovable.app',
-  'http://localhost:8080',
-  'http://127.0.0.1:8080'
+  //'http://localhost:8080',
+  //'http://127.0.0.1:8080'
 ];
 
 app.use(cors({
