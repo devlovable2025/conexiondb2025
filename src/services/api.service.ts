@@ -1,4 +1,3 @@
-
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { DatabaseConfig, ApiResponse } from '../types/api.types';
 
@@ -6,8 +5,10 @@ class ApiService {
   private api: AxiosInstance;
 
   constructor() {
-    // Define la URL del servidor backend explícitamente para evitar problemas de configuración
-    const backendUrl = 'http://localhost:3002';
+    // Determinar la URL del backend dinámicamente
+    const backendUrl = import.meta.env.PROD 
+      ? `https://preview--conexiondb2025.lovable.app/api`
+      : 'http://localhost:3002';
     
     this.api = axios.create({
       baseURL: backendUrl,
@@ -17,7 +18,7 @@ class ApiService {
       timeout: 15000, // Incrementamos el timeout para dar más margen a conexiones lentas
     });
 
-    console.log('API URL configurada:', backendUrl);
+    console.log('Backend URL configurada:', backendUrl);
   }
 
   async testDatabaseConnection(config: DatabaseConfig): Promise<ApiResponse<any>> {
