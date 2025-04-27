@@ -7,7 +7,7 @@ class ApiService {
 
   constructor() {
     this.api = axios.create({
-      baseURL: 'http://localhost:8000',
+      baseURL: window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'http://localhost:8000',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -17,7 +17,7 @@ class ApiService {
 
   async testDatabaseConnection(config: DatabaseConfig): Promise<ApiResponse<any>> {
     try {
-      console.log('Enviando solicitud de conexión a:', 'http://localhost:8000/api/database/test');
+      console.log('Enviando solicitud de conexión a:', `${this.api.defaults.baseURL}/api/database/test`);
       console.log('Configuración:', JSON.stringify(config, null, 2));
       
       const response = await this.api.post<ApiResponse<any>>('/api/database/test', config);
@@ -30,7 +30,7 @@ class ApiService {
       let errorMessage = 'Error de conexión desconocido';
       
       if (axiosError.code === 'ERR_NETWORK') {
-        errorMessage = 'Error de red: No se puede conectar al servidor. Asegúrese de que el servidor esté en ejecución.';
+        errorMessage = 'Error de red: No se puede conectar al servidor. Asegúrese de que el servidor esté en ejecución en http://localhost:8000';
       } else if (axiosError.code === 'ECONNREFUSED') {
         errorMessage = 'Conexión rechazada: El servidor no está disponible en este momento.';
       } else if (axiosError.response) {

@@ -75,10 +75,10 @@ export function ServerInstructions() {
                 <InfoIcon className="h-4 w-4" />
                 <AlertTitle>Información de puertos</AlertTitle>
                 <AlertDescription>
-                  <ul className="list-disc pl-5 space-y-1 mt-2">
-                    <li>Servidor Frontend (Vite): <span className="font-mono">http://localhost:8080</span></li>
-                    <li>Servidor Backend (Express): <span className="font-mono">http://localhost:8000</span></li>
-                  </ul>
+                  <div className="mt-2">
+                    <div>Servidor Frontend (Vite): <span className="font-mono">http://localhost:8080</span></div>
+                    <div>Servidor Backend (Express): <span className="font-mono">http://localhost:8000</span></div>
+                  </div>
                 </AlertDescription>
               </Alert>
             </div>

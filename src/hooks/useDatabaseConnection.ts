@@ -15,7 +15,9 @@ export function useDatabaseConnection() {
     setConnectionStatus(null);
     
     try {
+      console.log("Iniciando prueba de conexión con config:", config);
       const response = await apiService.testDatabaseConnection(config);
+      console.log("Respuesta recibida:", response);
       setIsLoading(false);
       
       if (response.success) {
@@ -41,6 +43,7 @@ export function useDatabaseConnection() {
         });
       }
     } catch (error) {
+      console.error("Error en testConnection:", error);
       setIsLoading(false);
       setConnectionStatus({
         success: false,
