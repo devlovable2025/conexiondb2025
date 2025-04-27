@@ -71,15 +71,15 @@ export function DatabaseConfigForm() {
   ];
 
   return (
-    <Card className="w-full max-w-3xl shadow-lg font-sans">
+    <Card className="w-full max-w-3xl mx-auto shadow-lg font-sans">
       <CardHeader>
-        <CardTitle className="text-center font-normal">Configuración de Base de Datos</CardTitle>
+        <CardTitle className="text-center font-bold">Configuración de Base de Datos</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="dbType" className="font-normal">Tipo de Base de Datos</Label>
+              <Label htmlFor="dbType" className="font-bold">Tipo de Base de Datos</Label>
               <Select
                 value={config.type}
                 onValueChange={(value: DatabaseType) => 
@@ -105,7 +105,7 @@ export function DatabaseConfigForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="host" className="font-normal">Host</Label>
+              <Label htmlFor="host" className="font-bold">Host</Label>
               <Input
                 id="host"
                 value={config.host}
@@ -117,7 +117,7 @@ export function DatabaseConfigForm() {
 
             {config.type === 'sqlserver' && (
               <div className="space-y-2">
-                <Label htmlFor="instanceName" className="font-normal">Nombre de Instancia (opcional)</Label>
+                <Label htmlFor="instanceName" className="font-bold">Nombre de Instancia (opcional)</Label>
                 <Input
                   id="instanceName"
                   value={config.instanceName}
@@ -128,7 +128,7 @@ export function DatabaseConfigForm() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="port" className="font-normal">Puerto</Label>
+              <Label htmlFor="port" className="font-bold">Puerto</Label>
               <Input
                 id="port"
                 type="number"
@@ -140,7 +140,7 @@ export function DatabaseConfigForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="database" className="font-normal">Base de datos</Label>
+              <Label htmlFor="database" className="font-bold">Base de datos</Label>
               <Select
                 value={config.database}
                 onValueChange={(value: string) => setConfig({ ...config, database: value })}
@@ -159,7 +159,7 @@ export function DatabaseConfigForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="username" className="font-normal">Usuario</Label>
+              <Label htmlFor="username" className="font-bold">Usuario</Label>
               <Input
                 id="username"
                 value={config.username}
@@ -169,7 +169,7 @@ export function DatabaseConfigForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="font-normal">Contraseña</Label>
+              <Label htmlFor="password" className="font-bold">Contraseña</Label>
               <Input
                 id="password"
                 type="password"
@@ -180,7 +180,7 @@ export function DatabaseConfigForm() {
             </div>
 
             <div className="col-span-2">
-              <Button type="submit" className="w-full mt-4 font-normal">
+              <Button type="submit" className="w-full mt-4 font-bold">
                 Probar Conexión
               </Button>
             </div>
