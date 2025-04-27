@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -18,6 +19,7 @@ import {
 import { toast } from '@/hooks/use-toast';
 import { apiService } from '../services/api.service';
 import type { DatabaseConfig, DatabaseType } from '../types/api.types';
+import { Alert, AlertTitle, AlertDescription } from './ui/alert';
 
 export function DatabaseConfigForm() {
   const [config, setConfig] = useState<DatabaseConfig>({
@@ -34,6 +36,11 @@ export function DatabaseConfigForm() {
 
   const [databases, setDatabases] = useState<{ value: string; label: string; }[]>([]);
   const [isConnectionTested, setIsConnectionTested] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState<{
+    success: boolean;
+    message: string;
+  } | null>(null);
 
   useEffect(() => {
     setConfig(prev => ({
@@ -44,8 +51,13 @@ export function DatabaseConfigForm() {
 
   const handleTestConnection = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    setConnectionStatus(null);
+    
     try {
       const response = await apiService.testDatabaseConnection(config);
+      setIsLoading(false);
+      
       if (response.success) {
         setIsConnectionTested(true);
         const mockDatabases = [
@@ -54,11 +66,19 @@ export function DatabaseConfigForm() {
           { value: 'db3', label: 'Base de datos 3' },
         ];
         setDatabases(mockDatabases);
+        setConnectionStatus({
+          success: true,
+          message: response.message || 'Conexión establecida correctamente'
+        });
         toast({
           title: "Conexión exitosa",
           description: "Por favor, seleccione una base de datos",
         });
       } else {
+        setConnectionStatus({
+          success: false,
+          message: response.error || "No se pudo establecer la conexión"
+        });
         toast({
           title: "Error de conexión",
           description: response.error || "No se pudo establecer la conexión",
@@ -66,6 +86,11 @@ export function DatabaseConfigForm() {
         });
       }
     } catch (error) {
+      setIsLoading(false);
+      setConnectionStatus({
+        success: false,
+        message: error instanceof Error ? error.message : "Error al conectar con el servidor"
+      });
       toast({
         title: "Error",
         description: "Ocurrió un error al intentar conectar con el servidor",
@@ -97,8 +122,22 @@ export function DatabaseConfigForm() {
           <CardTitle className="font-bold text-2xl mt-2">Mobilsoft - Gestor de Conexiones</CardTitle>
         </CardHeader>
         <CardContent>
+          {connectionStatus && (
+            <Alert 
+              className={`mb-6 ${connectionStatus.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}
+              variant={connectionStatus.success ? "default" : "destructive"}
+            >
+              <AlertTitle className={connectionStatus.success ? "text-green-800" : "text-red-800"}>
+                {connectionStatus.success ? "Conexión Exitosa" : "Error de Conexión"}
+              </AlertTitle>
+              <AlertDescription className={connectionStatus.success ? "text-green-700" : "text-red-700"}>
+                {connectionStatus.message}
+              </AlertDescription>
+            </Alert>
+          )}
+          
           <form onSubmit={!isConnectionTested ? handleTestConnection : handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="dbType" className="font-bold">Tipo de Base de Datos</Label>
                 <Select
@@ -203,9 +242,13 @@ export function DatabaseConfigForm() {
                 </div>
               )}
 
-              <div className="col-span-2">
-                <Button type="submit" className="w-full mt-4 font-bold">
-                  {!isConnectionTested ? 'Probar Conexión' : 'Guardar Configuración'}
+              <div className="col-span-1 md:col-span-2">
+                <Button 
+                  type="submit" 
+                  className="w-full mt-4 font-bold"
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Conectando...' : (!isConnectionTested ? 'Probar Conexión' : 'Guardar Configuración')}
                 </Button>
               </div>
             </div>

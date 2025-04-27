@@ -16,5 +16,6 @@ export interface DatabaseConfig {
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;
-  error?: string;
+  message?: string; // Campo para mensajes de éxito
+  error?: string; // Campo para mensajes de error
 }
