@@ -23,10 +23,8 @@ export function DatabaseConnectionForm({
   const {
     isLoading,
     isConnectionTested,
-    connectionStatus,
     databases,
     testConnection,
-    setIsConnectionTested
   } = useDatabaseConnection();
 
   const handleTestConnection = async (e: React.FormEvent) => {
