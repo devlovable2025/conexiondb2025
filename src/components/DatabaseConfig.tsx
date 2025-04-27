@@ -20,7 +20,15 @@ import { toast } from '@/hooks/use-toast';
 import { apiService } from '../services/api.service';
 import type { DatabaseConfig, DatabaseType } from '../types/api.types';
 import { Alert, AlertTitle, AlertDescription } from './ui/alert';
-import { InfoIcon, AlertCircleIcon, DatabaseIcon } from 'lucide-react';
+import { InfoIcon, AlertCircleIcon, DatabaseIcon, Terminal } from 'lucide-react';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 export function DatabaseConfigForm() {
   const [config, setConfig] = useState<DatabaseConfig>({
@@ -346,14 +354,8 @@ export function DatabaseConfigForm() {
                 </div>
               )}
 
-              <div className="col-span-1 md:col-span-2">
-                <Button 
-                  type="submit" 
-                  className="w-full mt-4 font-bold"
-                  disabled={isLoading || (!serverActive && !isConnectionTested)}
-                >
-                  {isLoading ? 'Conectando...' : (!isConnectionTested ? 'Probar Conexión' : 'Guardar Configuración')}
-                </Button>
+              <div className="col-span-1 md:col-span-2 mt-4">
+                <ServerInstructions />
               </div>
             </div>
           </form>
