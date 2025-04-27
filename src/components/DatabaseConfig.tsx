@@ -33,6 +33,9 @@ export function DatabaseConfigForm() {
     instanceName: ''
   });
 
+  const [databases, setDatabases] = useState<{ value: string; label: string; }[]>([]);
+  const [isConnectionTested, setIsConnectionTested] = useState(false);
+
   useEffect(() => {
     setConfig(prev => ({
       ...prev,
@@ -40,14 +43,23 @@ export function DatabaseConfigForm() {
     }));
   }, [config.type]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleTestConnection = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const response = await apiService.testDatabaseConnection(config);
       if (response.success) {
+        setIsConnectionTested(true);
+        // Asumiendo que el servidor devuelve las bases de datos disponibles
+        // Aquí deberías hacer otra llamada para obtener las bases de datos
+        const mockDatabases = [
+          { value: 'db1', label: 'Base de datos 1' },
+          { value: 'db2', label: 'Base de datos 2' },
+          { value: 'db3', label: 'Base de datos 3' },
+        ];
+        setDatabases(mockDatabases);
         toast({
           title: "Conexión exitosa",
-          description: `La conexión a la base de datos ${config.type === 'postgresql' ? 'PostgreSQL' : 'SQL Server'} se estableció correctamente.`,
+          description: "Por favor, seleccione una base de datos",
         });
       } else {
         toast({
@@ -65,11 +77,22 @@ export function DatabaseConfigForm() {
     }
   };
 
-  const databases = [
-    { value: 'db1', label: 'Base de datos 1' },
-    { value: 'db2', label: 'Base de datos 2' },
-    { value: 'db3', label: 'Base de datos 3' },
-  ];
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!config.database) {
+      toast({
+        title: "Error",
+        description: "Por favor, seleccione una base de datos",
+        variant: "destructive",
+      });
+      return;
+    }
+    // Aquí iría la lógica para guardar la configuración final
+    toast({
+      title: "Éxito",
+      description: "Configuración guardada correctamente",
+    });
+  };
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-200px)] px-4">
@@ -78,7 +101,7 @@ export function DatabaseConfigForm() {
           <CardTitle className="font-bold text-2xl mt-2">Mobilsoft - Gestor de Conexiones</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={!isConnectionTested ? handleTestConnection : handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="dbType" className="font-bold">Tipo de Base de Datos</Label>
@@ -142,25 +165,6 @@ export function DatabaseConfigForm() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="database" className="font-bold">Base de datos</Label>
-                <Select
-                  value={config.database}
-                  onValueChange={(value: string) => setConfig({ ...config, database: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona la base de datos" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {databases.map((db) => (
-                      <SelectItem key={db.value} value={db.value}>
-                        {db.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
                 <Label htmlFor="username" className="font-bold">Usuario</Label>
                 <Input
                   id="username"
@@ -181,9 +185,30 @@ export function DatabaseConfigForm() {
                 />
               </div>
 
+              {isConnectionTested && (
+                <div className="space-y-2">
+                  <Label htmlFor="database" className="font-bold">Base de datos</Label>
+                  <Select
+                    value={config.database}
+                    onValueChange={(value: string) => setConfig({ ...config, database: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona la base de datos" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {databases.map((db) => (
+                        <SelectItem key={db.value} value={db.value}>
+                          {db.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
               <div className="col-span-2">
                 <Button type="submit" className="w-full mt-4 font-bold">
-                  Probar Conexión
+                  {!isConnectionTested ? 'Probar Conexión' : 'Guardar Configuración'}
                 </Button>
               </div>
             </div>
